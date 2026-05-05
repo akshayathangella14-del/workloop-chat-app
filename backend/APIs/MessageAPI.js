@@ -9,6 +9,34 @@ import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
 
 export const messageApp = exp.Router();
 
+const scheduleMessageReminder = (messageDoc) => {
+  if (!messageDoc.reminderTime) {
+    return;
+  }
+
+  const reminderDate = new Date(messageDoc.reminderTime);
+  const delay = reminderDate.getTime() - Date.now();
+
+  if (delay <= 0) {
+    return;
+  }
+
+  setTimeout(async () => {
+    try {
+      await NotificationModel.create({
+        user: messageDoc.sender,
+        workspace: messageDoc.workspace,
+        channel: messageDoc.channel,
+        message: messageDoc._id,
+        notificationType: "REMINDER",
+        text: `Reminder: ${messageDoc.content || "Check your message"}`,
+      });
+    } catch (err) {
+      console.log("Error creating reminder notification", err.message);
+    }
+  }, delay);
+};
+
 
 // Send channel message
 messageApp.post("/channel-message", verifyToken("USER", "ADMIN"), async (req, res) => {
@@ -53,6 +81,9 @@ messageApp.post("/channel-message", verifyToken("USER", "ADMIN"), async (req, re
 
     const newMessage = new MessageModel(messageObj);
     await newMessage.save();
+
+    scheduleMessageReminder(newMessage);
+
 
     res.status(201).json({
       message: "Message sent successfully",
@@ -103,6 +134,8 @@ messageApp.post("/direct-message", verifyToken("USER", "ADMIN"), async (req, res
 
     const newMessage = new MessageModel(messageObj);
     await newMessage.save();
+    scheduleMessageReminder(newMessage);
+
 
     await NotificationModel.create({
       user: messageObj.receiver,
@@ -151,6 +184,8 @@ messageApp.post("/file-message", verifyToken("USER", "ADMIN"), upload.single("fi
 
     const newMessage = new MessageModel(messageObj);
     await newMessage.save();
+    scheduleMessageReminder(newMessage);
+
 
     res.status(201).json({
       message: "File shared successfully",
@@ -255,6 +290,34 @@ messageApp.put("/message", verifyToken("USER", "ADMIN"), async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Error editing message",
+      error: err.message,
+    });
+  }
+});
+
+// Get upcoming reminders of logged in user
+messageApp.get("/reminders", verifyToken("USER", "ADMIN"), async (req, res) => {
+  try {
+    const userId = req.user?.id;
+
+    const remindersList = await MessageModel.find({
+      sender: userId,
+      reminderTime: { $gte: new Date() },
+      isMessageActive: true,
+    })
+      .populate("workspace", "workspaceName")
+      .populate("channel", "channelName")
+      .populate("receiver", "firstName lastName email profileImageUrl")
+      .sort({ reminderTime: 1 });
+
+    res.status(200).json({
+      message: "Reminders fetched successfully",
+      payload: remindersList,
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching reminders",
       error: err.message,
     });
   }

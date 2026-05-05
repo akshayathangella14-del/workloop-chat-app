@@ -18,7 +18,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Send Direct Message
 POST http://localhost:5000/message-api/direct-message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk4ODg5NiwiZXhwIjoxNzc4MDc1Mjk2fQ.7vqpWJ-TPboVEoWxhj857N1RK7kLxBMkZK8UOcLxIB8
 
 {
   "workspace": "69f8cc87bf5754b4922b85d6",
@@ -40,6 +40,40 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Get Direct Message Conversations
 GET http://localhost:5000/dm-api/conversations/69f8cc87bf5754b4922b85d6
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+
+
+### Send Channel Message With Priority And Reminder
+POST http://localhost:5000/message-api/channel-message
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk5MDI4OSwiZXhwIjoxNzc4MDc2Njg5fQ.VjEdLPymhH4iNGcLRTPfyFjde8uqJLvYlNAjQv-39cc
+
+{
+  "workspace": "69f8cc87bf5754b4922b85d6",
+  "channel": "69f8cf70bf5754b4922b85f1",
+  "content": "We must complete the frontend tomorrow before the meeting",
+  "priority": "HIGH",
+  "reminderTime": "2026-05-06T10:00:00.000Z"
+}
+
+
+### Send Direct Message With Priority And Reminder
+POST http://localhost:5000/message-api/direct-message
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk5MDI4OSwiZXhwIjoxNzc4MDc2Njg5fQ.VjEdLPymhH4iNGcLRTPfyFjde8uqJLvYlNAjQv-39cc
+
+{
+  "workspace": "69f8cc87bf5754b4922b85d6",
+  "receiver": "69f8cd83bf5754b4922b85df",
+  "content": "Please check the deadline document tomorrow",
+  "priority": "MEDIUM",
+  "reminderTime": "2026-05-06T10:00:00.000Z"
+}
+
+### Get My Upcoming Reminders
+GET http://localhost:5000/message-api/reminders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
+
+
 
 
 ### Send File Message

@@ -19,10 +19,11 @@ const notificationSchema = new Schema({
     ref: "message"
   },
   notificationType: {
-    type: String,
-    enum: ["MESSAGE", "REACTION", "THREAD_REPLY"],
-    required: [true, "Notification type is required"]
-  },
+  type: String,
+  enum: ["MESSAGE", "REACTION", "THREAD_REPLY", "REMINDER"],
+  required: [true, "Notification type is required"]
+},
+
   text: {
     type: String,
     required: [true, "Notification text is required"]

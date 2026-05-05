@@ -95,7 +95,15 @@ const messageSchema = new Schema({
   isMessageActive: {
     type: Boolean,
     default: true
-  }
+  },
+  priority: {
+    type: String,
+    enum: ["LOW", "MEDIUM", "HIGH"],
+    default: "LOW"
+  },
+  reminderTime: {
+    type: Date
+  },
 }, {
   timestamps: true,
   versionKey: false,
