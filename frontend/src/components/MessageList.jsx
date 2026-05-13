@@ -30,10 +30,13 @@ function MessageList({
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
   const { socket } = useChat();
-  const visibleMessages = messagesProp || messages;
+  const visibleMessages = messages;
   const displayedMessages = visibleMessages.filter(
     (message) => !hiddenMessageIds.includes(message._id)
   );
+  useEffect(() => {
+    setMessages(messagesProp || []);
+  }, [messagesProp]);
 
   const updateMessages = useCallback((nextMessages) => {
     setMessages(nextMessages);
