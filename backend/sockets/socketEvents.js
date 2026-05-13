@@ -43,42 +43,56 @@ export const registerSocketEvents = (io, socket) => {
   // Send real-time message
   socket.on("send-message", async (messageObj) => {
     try {
-      const newMessage = new MessageModel({
-        ...messageObj,
-        sender: socket.user?.id,
-      });
 
-      await newMessage.save();
+      const newMessage = messageObj;
 
       if (newMessage.messageType === "CHANNEL") {
-        io.to(`channel-${newMessage.channel}`).emit("receive-message", {
-          message: "Message received",
-          payload: newMessage,
-        });
+
+        io.to(`channel-${newMessage.channel}`).emit(
+          "receive-message",
+          {
+            message: "Message received",
+            payload: newMessage,
+          }
+        );
       }
 
       if (newMessage.messageType === "DIRECT") {
-        const roomId = [newMessage.sender.toString(), newMessage.receiver.toString()].sort().join("-");
 
-        io.to(`dm-${roomId}`).emit("receive-message", {
-          message: "Message received",
-          payload: newMessage,
-        });
+        const roomId = [
+          newMessage.sender.toString(),
+          newMessage.receiver.toString(),
+        ]
+          .sort()
+          .join("-");
 
-        io.to(`user-${newMessage.receiver}`).emit("new-notification", {
-          message: "New notification",
-          payload: {
-            notificationType: "MESSAGE",
-            text: "You received a new direct message",
-          },
-        });
+        io.to(`dm-${roomId}`).emit(
+          "receive-message",
+          {
+            message: "Message received",
+            payload: newMessage,
+          }
+        );
+
+        io.to(`user-${newMessage.receiver}`).emit(
+          "new-notification",
+          {
+            message: "New notification",
+            payload: {
+              notificationType: "MESSAGE",
+              text: "You received a new direct message",
+            },
+          }
+        );
       }
 
     } catch (err) {
+
       socket.emit("socket-error", {
         message: "Error sending message",
         error: err.message,
       });
+
     }
   });
 

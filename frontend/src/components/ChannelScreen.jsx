@@ -5,6 +5,7 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import ThreadPanel from "./ThreadPanel";
+import { useChat } from "../store/chatStore";
 import {
   chatLayout,
   chatLayoutWithThread,
@@ -44,6 +45,7 @@ function ChannelScreen({
   const [messageRefreshKey, setMessageRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { joinChannel } = useChat();
 
   const resolvedChannelId = channelId || getId(channel) || params.channelId;
   const resolvedWorkspaceId =
@@ -106,6 +108,15 @@ function ChannelScreen({
 
     return () => clearTimeout(timerId);
   }, [loadScreen]);
+
+  useEffect(() => {
+    if (!resolvedChannelId) {
+      return;
+    }
+
+    joinChannel(resolvedChannelId);
+
+  }, [joinChannel, resolvedChannelId]);
 
   if (loading) {
     return <div style={loadingStyle}>Loading channel...</div>;

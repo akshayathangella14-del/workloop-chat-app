@@ -5,6 +5,7 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import ThreadPanel from "./ThreadPanel";
+import { useChat } from "../store/chatStore";
 import {
   chatLayout,
   chatLayoutWithThread,
@@ -47,6 +48,7 @@ function DirectMessageScreen({
   const [messageRefreshKey, setMessageRefreshKey] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { joinDirectMessage } = useChat();
 
   const resolvedWorkspaceId = workspaceId || getId(workspace) || params.workspaceId;
   const resolvedReceiverId =
@@ -112,6 +114,15 @@ function DirectMessageScreen({
 
     return () => clearTimeout(timerId);
   }, [loadScreen]);
+
+  useEffect(() => {
+    if (!resolvedReceiverId) {
+      return;
+    }
+
+    joinDirectMessage(resolvedReceiverId);
+
+  }, [joinDirectMessage, resolvedReceiverId]);
 
   if (loading) {
     return <div style={loadingStyle}>Loading conversation...</div>;
