@@ -698,6 +698,11 @@ export const useChat = create((set, get) => ({
     socket.on("socket-error", (data) => {
       set({ error: data?.error || data?.message || "Socket error" });
     });
+    socket.on("online-users", (users) => {
+      set({
+        onlineUsers: users || [],
+      });
+    });
 
     socket.on("user-online", (data) => {
       const userId = data?.payload?.userId;
