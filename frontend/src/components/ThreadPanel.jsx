@@ -65,7 +65,7 @@ function ThreadPanel({
   onClose,
 }) {
   const [replies, setReplies] = useState([]);
-  const { socket } = useChat();
+ const { socket, joinChannel } = useChat();
 
   const [replyText, setReplyText] =
     useState("");
@@ -113,6 +113,19 @@ function ThreadPanel({
   useEffect(() => {
     loadReplies();
   }, [loadReplies]);
+
+
+  useEffect(() => {
+
+  const channelId = getId(message?.channel);
+
+  if (!channelId) {
+    return;
+  }
+
+  joinChannel(channelId);
+
+}, [joinChannel, message]);
 
   useEffect(() => {
 
