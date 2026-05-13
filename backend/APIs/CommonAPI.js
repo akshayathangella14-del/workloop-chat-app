@@ -65,8 +65,9 @@ commonApp.post("/login", async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,    
+      sameSite: "lax",   
+       maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
@@ -86,10 +87,10 @@ commonApp.post("/login", async (req, res) => {
 // Route for Logout
 commonApp.get("/logout", (req, res) => {
   res.clearCookie("token", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-  });
+  httpOnly: true,
+  secure: false,
+  sameSite: "none",
+});
 
   res.status(200).json({
     message: "Logout successful",
@@ -97,12 +98,35 @@ commonApp.get("/logout", (req, res) => {
 });
 
 // Page refresh check
-commonApp.get("/check-auth", verifyToken("USER", "ADMIN"), (req, res) => {
-  res.status(200).json({
-    message: "authenticated",
-    payload: req.user,
-  });
-});
+commonApp.get(
+  "/check-auth",
+  verifyToken("USER", "ADMIN"),
+  async (req, res) => {
+    try {
+      const user = await UserModel.findById(
+        req.user.id
+      ).select("-password");
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      res.status(200).json({
+        message: "authenticated",
+        payload: user,
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: "error",
+        error: err.message,
+      });
+    }
+  }
+);
+
+
 
 // Password change
 commonApp.put("/password", verifyToken("USER", "ADMIN"), async (req, res) => {

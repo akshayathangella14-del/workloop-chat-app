@@ -11,6 +11,7 @@ import { channelApp } from "./APIs/ChannelAPI.js";
 import { directMessageApp } from "./APIs/DirectMessageAPI.js";
 import { messageApp } from "./APIs/MessageAPI.js";
 import { notificationApp } from "./APIs/NotificationAPI.js";
+import { adminApp } from "./APIs/AdminAPI.js";
 
 import { connectRedis } from "./config/redis.js";
 import { initializeSocket } from "./sockets/socket.js";
@@ -40,6 +41,7 @@ app.use("/channel-api", channelApp);
 app.use("/dm-api", directMessageApp);
 app.use("/message-api", messageApp);
 app.use("/notification-api", notificationApp);
+app.use("/admin-api", adminApp);
 
 // assign port
 const port = process.env.PORT || 5000;

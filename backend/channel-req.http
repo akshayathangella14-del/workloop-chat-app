@@ -1,10 +1,9 @@
 ### Create Public Channel
 POST http://localhost:5000/channel-api/channels
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
   "channelName": "general",
   "description": "Main public channel",
   "channelType": "PUBLIC"
@@ -14,10 +13,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Create Private Channel
 POST http://localhost:5000/channel-api/channels
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
   "channelName": "private-team",
   "description": "Private channel for selected members",
   "channelType": "PRIVATE"
@@ -25,22 +23,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 
 
 ### Get Channels Of Workspace
-GET http://localhost:5000/channel-api/channels/69f8cc87bf5754b4922b85d6
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+GET http://localhost:5000/channel-api/channels/69fabe65ee0e8df73ddaf3dc
 
 
 ### Get Single Channel
 GET http://localhost:5000/channel-api/channel/69f8cf70bf5754b4922b85f1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 
 ### Add Member To Channel
 PUT http://localhost:5000/channel-api/channel/member
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "channelId": "69f8cf70bf5754b4922b85f1",
+  "channelId": "69fac00bee0e8df73ddaf3f0",
   "email": "user2@mail.com"
 }
 
@@ -48,20 +43,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Leave Channel
 PATCH http://localhost:5000/channel-api/channel/leave
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "channelId": "69f8cf70bf5754b4922b85f1"
+  "channelId": "69fac00bee0e8df73ddaf3f0"
 }
 
 
 ### Soft Delete Channel
 PATCH http://localhost:5000/channel-api/channel/status
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "channelId": "69f8cf70bf5754b4922b85f1",
+  "channelId": "69fac00bee0e8df73ddaf3f0",
   "isChannelActive": false
 }
 
@@ -69,9 +62,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Restore Channel
 PATCH http://localhost:5000/channel-api/channel/status
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "channelId": "69f8cf70bf5754b4922b85f1",
+  "channelId": "69fac00bee0e8df73ddaf3f0",
   "isChannelActive": true
 }

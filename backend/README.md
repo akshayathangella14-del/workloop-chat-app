@@ -6,15 +6,6 @@ This backend is built for a Real-Time Chat Application, similar to a simple Slac
 
 The main idea is that users can create workspaces, create channels inside those workspaces, chat with teammates, send direct messages, share files, react to messages, edit messages, reply in threads, receive notifications, and use a unique priority/reminder feature for important messages.
 
-We followed a simple blog-style backend structure:
-
-- API files contain routes and logic together.
-- No controllers folder.
-- No services folder.
-- Models are separate.
-- Middleware is simple.
-- Response format is consistent.
-- Code is beginner-friendly and easy to explain.
 
 ## 2. Main Features
 

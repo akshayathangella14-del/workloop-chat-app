@@ -31,24 +31,6 @@ const reactionSchema = new Schema({
   }
 });
 
-const threadReplySchema = new Schema({
-  sender: {
-    type: Types.ObjectId,
-    ref: "user",
-    required: [true, "Sender ID required"]
-  },
-  content: {
-    type: String
-  },
-  file: {
-    type: fileSchema,
-    default: null
-  }
-}, {
-  timestamps: true,
-  versionKey: false
-});
-
 const messageSchema = new Schema({
   workspace: {
     type: Types.ObjectId,
@@ -84,9 +66,10 @@ const messageSchema = new Schema({
     type: [reactionSchema],
     default: []
   },
-  threadReplies: {
-    type: [threadReplySchema],
-    default: []
+  parentMessage: {
+    type: Types.ObjectId,
+    ref: "message",
+    default: null
   },
   isEdited: {
     type: Boolean,
@@ -100,6 +83,10 @@ const messageSchema = new Schema({
     type: String,
     enum: ["LOW", "MEDIUM", "HIGH"],
     default: "LOW"
+  },
+  isReminderTriggered: {
+    type: Boolean,
+    default: false
   },
   reminderTime: {
     type: Date

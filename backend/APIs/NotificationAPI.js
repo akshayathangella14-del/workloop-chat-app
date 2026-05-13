@@ -15,7 +15,14 @@ notificationApp.get("/notifications", verifyToken("USER", "ADMIN"), async (req, 
     })
       .populate("workspace", "workspaceName")
       .populate("channel", "channelName")
-      .populate("message", "content")
+      .populate({
+        path: "message",
+        populate: {
+          path: "sender",
+          select:
+            "_id firstName lastName email profileImageUrl",
+        },
+      })
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -93,3 +100,38 @@ notificationApp.patch("/notifications/read", verifyToken("USER", "ADMIN"), async
     });
   }
 });
+
+
+// Mark reminder notifications as read
+notificationApp.patch(
+  "/notifications/reminders/read",
+  verifyToken("USER", "ADMIN"),
+  async (req, res) => {
+    try {
+      const userId = req.user?.id;
+
+      await NotificationModel.updateMany(
+        {
+          user: userId,
+          notificationType: "REMINDER",
+          isRead: false,
+        },
+        {
+          isRead: true,
+        }
+      );
+
+      res.status(200).json({
+        message:
+          "Reminder notifications marked as read",
+      });
+    } catch (err) {
+      res.status(500).json({
+        message:
+          "Error updating reminder notifications",
+        error: err.message,
+      });
+    }
+  }
+);
+

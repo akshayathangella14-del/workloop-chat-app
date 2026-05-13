@@ -48,11 +48,18 @@ workspaceApp.post("/workspaces", verifyToken("USER", "ADMIN"), async (req, res) 
 workspaceApp.get("/workspaces", verifyToken("USER", "ADMIN"), async (req, res) => {
   try {
     const userId = req.user?.id;
+    const role = req.user?.role;
 
-    const workspacesList = await WorkspaceModel.find({
-      "members.user": userId,
+    let filter = {
       isWorkspaceActive: true,
-    })
+    };
+
+    // NORMAL USER
+    if (role !== "ADMIN") {
+      filter["members.user"] = userId;
+    }
+
+    const workspacesList = await WorkspaceModel.find(filter)
       .populate("owner", "firstName lastName email profileImageUrl")
       .populate("members.user", "firstName lastName email profileImageUrl");
 
@@ -68,7 +75,6 @@ workspaceApp.get("/workspaces", verifyToken("USER", "ADMIN"), async (req, res) =
     });
   }
 });
-
 
 // Get single workspace
 workspaceApp.get("/workspace/:id", verifyToken("USER", "ADMIN"), async (req, res) => {

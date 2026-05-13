@@ -16,14 +16,13 @@ POST http://localhost:5000/auth/users
 Content-Type: application/json
 
 {
-  "firstName": "user2",
+  "firstName": "user4",
   "lastName": "test",
-  "email": "user2@mail.com",
-  "password": "user2",
+  "email": "user4@mail.com",
+  "password": "user4",
   "role": "USER",
-  "profileImageUrl": "https://example.com/user2.png"
+  "profileImageUrl": "https://example.com/user4.png"
 }
-
 
 
 ### Register Admin
@@ -46,7 +45,7 @@ Content-Type: application/json
 
 {
   "email": "user1@mail.com",
-  "password": "user@1"
+  "password": "user1"
 }
 
 
@@ -62,13 +61,11 @@ Content-Type: application/json
 
 ### Check Auth
 GET http://localhost:5000/auth/check-auth
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 
 ### Change Password
 PUT http://localhost:5000/auth/password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
   "currentPassword": "user1",
@@ -78,3 +75,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 
 ### Logout
 GET http://localhost:5000/auth/logout
+

@@ -1,55 +1,48 @@
 ### Send Channel Message
 POST http://localhost:5000/message-api/channel-message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
-  "channel": "69f8cf70bf5754b4922b85f1",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
+  "channel": "69fac00bee0e8df73ddaf3f0",
   "content": "Hello team, this is our first channel message"
 }
 
 
 ### Get Channel Messages
-GET http://localhost:5000/message-api/channel-messages/69f8cf70bf5754b4922b85f1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+GET http://localhost:5000/message-api/channel-messages/69fac00bee0e8df73ddaf3f0
 
 
 ### Send Direct Message
 POST http://localhost:5000/message-api/direct-message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk4ODg5NiwiZXhwIjoxNzc4MDc1Mjk2fQ.7vqpWJ-TPboVEoWxhj857N1RK7kLxBMkZK8UOcLxIB8
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
   "receiver": "69f8cd83bf5754b4922b85df",
   "content": "Hello, this is a direct message"
 }
 
 
 ### Get Workspace Users For Direct Message
-GET http://localhost:5000/dm-api/users/69f8cc87bf5754b4922b85d6
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+GET http://localhost:5000/dm-api/users/69fabe65ee0e8df73ddaf3dc
 
 
 ### Get Direct Messages With User
-GET http://localhost:5000/dm-api/messages/69f8cc87bf5754b4922b85d6/69f8cd83bf5754b4922b85df
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+GET http://localhost:5000/dm-api/messages/69fabe65ee0e8df73ddaf3dc/69f8cd83bf5754b4922b85df
 
 
 ### Get Direct Message Conversations
-GET http://localhost:5000/dm-api/conversations/69f8cc87bf5754b4922b85d6
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxMjgxMywiZXhwIjoxNzc3OTk5MjEzfQ.7T8vi-p-S3MKqBzshJ1bGeUTEh-2p_RN5zm1HEXPoLE
+GET http://localhost:5000/dm-api/conversations/69fabe65ee0e8df73ddaf3dc
 
 
 ### Send Channel Message With Priority And Reminder
 POST http://localhost:5000/message-api/channel-message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk5MDI4OSwiZXhwIjoxNzc4MDc2Njg5fQ.VjEdLPymhH4iNGcLRTPfyFjde8uqJLvYlNAjQv-39cc
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
-  "channel": "69f8cf70bf5754b4922b85f1",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
+  "channel": "69fac00bee0e8df73ddaf3f0",
   "content": "We must complete the frontend tomorrow before the meeting",
   "priority": "HIGH",
   "reminderTime": "2026-05-06T10:00:00.000Z"
@@ -59,10 +52,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Send Direct Message With Priority And Reminder
 POST http://localhost:5000/message-api/direct-message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3Nzk5MDI4OSwiZXhwIjoxNzc4MDc2Njg5fQ.VjEdLPymhH4iNGcLRTPfyFjde8uqJLvYlNAjQv-39cc
 
 {
-  "workspace": "69f8cc87bf5754b4922b85d6",
+  "workspace": "69fabe65ee0e8df73ddaf3dc",
   "receiver": "69f8cd83bf5754b4922b85df",
   "content": "Please check the deadline document tomorrow",
   "priority": "MEDIUM",
@@ -71,24 +63,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 
 ### Get My Upcoming Reminders
 GET http://localhost:5000/message-api/reminders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
-
 
 
 
 ### Send File Message
 POST http://localhost:5000/message-api/file-message
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 Content-Type: multipart/form-data; boundary=ChatBoundary
 
 --ChatBoundary
 Content-Disposition: form-data; name="workspace"
 
-69f8cc87bf5754b4922b85d6
+69fabe65ee0e8df73ddaf3dc
 --ChatBoundary
 Content-Disposition: form-data; name="channel"
 
-69f8cf70bf5754b4922b85f1
+69fac00bee0e8df73ddaf3f0
 --ChatBoundary
 Content-Disposition: form-data; name="messageType"
 
@@ -108,10 +97,9 @@ Content-Type: image/png
 ### Edit Own Message
 PUT http://localhost:5000/message-api/message
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
-  "messageId": "PASTE_MESSAGE_ID_HERE",
+  "messageId": "69fac1c1ee0e8df73ddaf3fa",
   "content": "Updated message content"
 }
 
@@ -119,10 +107,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Add Or Update Reaction
 PUT http://localhost:5000/message-api/message/reaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
-  "messageId": "69f8d5e5bf5754b4922b8602",
+  "messageId": "69fac1c1ee0e8df73ddaf3fa",
   "reaction": "like"
 }
 
@@ -130,34 +117,32 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Remove Reaction
 PATCH http://localhost:5000/message-api/message/reaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
-  "messageId": "69f8d5e5bf5754b4922b8602"
+  "messageId": "69fac1c1ee0e8df73ddaf3fa"
 }
 
 
 ### Add Thread Reply
 PUT http://localhost:5000/message-api/message/thread
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
-  "messageId": "69f8d5e5bf5754b4922b8602",
+  "messageId": "69fac1c1ee0e8df73ddaf3fa",
   "content": "This is a thread reply"
 }
 
 
 ### Get Thread Replies
-GET http://localhost:5000/message-api/message/thread/69f8d5e5bf5754b4922b8602
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
+GET http://localhost:5000/message-api/message/thread/69fac1c1ee0e8df73ddaf3fa
+
 
 ### Soft Delete Message
 PATCH http://localhost:5000/message-api/message/status
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
+
 {
-  "messageId": "69f8d5e5bf5754b4922b8602",
+  "messageId": "69fac1c1ee0e8df73ddaf3fa",
   "isMessageActive": false
 }
 
@@ -165,23 +150,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 ### Restore Message
 PATCH http://localhost:5000/message-api/message/status
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
+
 
 {
-  "messageId": "69f8d5e5bf5754b4922b8602",
+  "messageId": "69fac1c1ee0e8df73ddaf3fa",
   "isMessageActive": true
 }
 
 
 ### Get Notifications
 GET http://localhost:5000/notification-api/notifications
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 
 ### Mark One Notification As Read
 PATCH http://localhost:5000/notification-api/notification/read
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
 
 {
   "notificationId": "69f8d696bf5754b4922b860d"
@@ -190,4 +173,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhY
 
 ### Mark All Notifications As Read
 PATCH http://localhost:5000/notification-api/notifications/read
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjhjOWJhYmY1NzU0YjQ5MjJiODVkNCIsImVtYWlsIjoidXNlcjFAbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NzkxNjIwNywiZXhwIjoxNzc4MDAyNjA3fQ.E5Nm4h0M7EEuGyBJP_bKRzWSQHACELrRWekEuCSWPBY
+
