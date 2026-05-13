@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import MessageItem from "./MessageItem";
+import { useChat } from "../store/chatStore";
 import { emptyState, errorText, loading as loadingStyle, messageList } from "../styles/common";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -28,6 +29,7 @@ function MessageList({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const messagesEndRef = useRef(null);
+  const { socket } = useChat();
   const visibleMessages = messagesProp || messages;
   const displayedMessages = visibleMessages.filter(
     (message) => !hiddenMessageIds.includes(message._id)
@@ -78,19 +80,55 @@ function MessageList({
     }
   }, [channelId, messageType, messagesProp, receiverId, updateMessages, workspaceId]);
 
-useEffect(() => {
-  const timerId = setTimeout(() => {
-    loadMessages();
-  }, 0);
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      loadMessages();
+    }, 0);
 
-  return () => clearTimeout(timerId);
-}, [loadMessages, refreshKey]);
+    return () => clearTimeout(timerId);
+  }, [loadMessages, refreshKey]);
 
-useEffect(() => {
-  messagesEndRef.current?.scrollIntoView({
-    behavior: "smooth",
-  });
-}, [displayedMessages]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [displayedMessages]);
+
+  useEffect(() => {
+
+    if (!socket) {
+      return;
+    }
+
+    const handleReceiveMessage = (data) => {
+
+      const newMessage = data?.payload;
+
+      if (!newMessage) {
+        return;
+      }
+
+      setMessages((prev) => {
+
+        const exists = prev.some(
+          (item) => item._id === newMessage._id
+        );
+
+        if (exists) {
+          return prev;
+        }
+
+        return [...prev, newMessage];
+      });
+    };
+
+    socket.on("receive-message", handleReceiveMessage);
+
+    return () => {
+      socket.off("receive-message", handleReceiveMessage);
+    };
+
+  }, [socket]);
 
   const handleEdit = async (messageId, content) => {
     try {
@@ -197,34 +235,34 @@ useEffect(() => {
     return <div style={loadingStyle}>Loading messages...</div>;
   }
 
-return (
-  <div style={messageList}>
-    {error && <p style={errorText}>{error}</p>}
+  return (
+    <div style={messageList}>
+      {error && <p style={errorText}>{error}</p>}
 
-    {displayedMessages.length === 0 ? (
-      <div style={emptyState}>
-        No messages yet. Start the conversation.
-      </div>
-    ) : (
-      <>
-        {displayedMessages.map((message) => (
-          <MessageItem
-            key={message._id}
-            message={message}
-            currentUser={currentUser}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onReact={handleReact}
-            onRemoveReaction={handleRemoveReaction}
-            onOpenThread={handleOpenThread}
-          />
-        ))}
+      {displayedMessages.length === 0 ? (
+        <div style={emptyState}>
+          No messages yet. Start the conversation.
+        </div>
+      ) : (
+        <>
+          {displayedMessages.map((message) => (
+            <MessageItem
+              key={message._id}
+              message={message}
+              currentUser={currentUser}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onReact={handleReact}
+              onRemoveReaction={handleRemoveReaction}
+              onOpenThread={handleOpenThread}
+            />
+          ))}
 
-        <div ref={messagesEndRef} />
-      </>
-    )}
-  </div>
-);
+          <div ref={messagesEndRef} />
+        </>
+      )}
+    </div>
+  );
 }
 
 export default MessageList;
