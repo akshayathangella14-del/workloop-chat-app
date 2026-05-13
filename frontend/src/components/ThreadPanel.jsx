@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-
+import { useChat } from "../store/chatStore";
 import MessageItem from "./MessageItem";
 
 import {
@@ -65,6 +65,7 @@ function ThreadPanel({
   onClose,
 }) {
   const [replies, setReplies] = useState([]);
+  const { socket } = useChat();
 
   const [replyText, setReplyText] =
     useState("");
@@ -113,6 +114,55 @@ function ThreadPanel({
     loadReplies();
   }, [loadReplies]);
 
+  useEffect(() => {
+
+  if (!socket || !messageId) {
+    return;
+  }
+
+  const handleThreadReply = (data) => {
+
+    const newReply = data?.payload;
+
+    if (!newReply) {
+      return;
+    }
+
+    // only update current thread
+    if (
+      getId(newReply.parentMessage) !== messageId
+    ) {
+      return;
+    }
+
+    setReplies((prev) => {
+
+      const exists = prev.some(
+        (item) => getId(item) === getId(newReply)
+      );
+
+      if (exists) {
+        return prev;
+      }
+
+      return [...prev, newReply];
+    });
+  };
+
+  socket.on(
+    "receive-thread-reply",
+    handleThreadReply
+  );
+
+  return () => {
+    socket.off(
+      "receive-thread-reply",
+      handleThreadReply
+    );
+  };
+
+}, [socket, messageId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -138,12 +188,6 @@ function ThreadPanel({
 
       const newReply = res.data?.payload;
 
-      if (newReply) {
-        setReplies((prev) => [
-          ...prev,
-          newReply,
-        ]);
-      }
 
       setReplyText("");
     } catch (err) {

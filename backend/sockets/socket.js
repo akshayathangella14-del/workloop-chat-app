@@ -8,6 +8,7 @@ import { registerSocketEvents } from "./socketEvents.js";
 const { verify } = jwt;
 
 config();
+let io;
 
 const onlineUsers = new Map();
 
@@ -22,7 +23,7 @@ const getTokenFromCookie = (cookieHeader) => {
 };
 
 export const initializeSocket = (httpServer) => {
-  const io = new Server(httpServer, {
+   io = new Server(httpServer, {
     cors: {
       origin: process.env.CLIENT_URL,
       credentials: true,
@@ -30,6 +31,7 @@ export const initializeSocket = (httpServer) => {
     },
   });
 
+  
   io.use(async (socket, next) => {
     try {
       let token = socket.handshake.auth?.token;
@@ -107,4 +109,11 @@ export const initializeSocket = (httpServer) => {
   });
 
   console.log("Socket connected");
+};
+
+export const getIO = () => {
+  if (!io) {
+    throw new Error("Socket.io not initialized");
+  }
+  return io;
 };

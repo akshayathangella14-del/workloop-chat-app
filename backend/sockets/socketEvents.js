@@ -248,55 +248,55 @@ export const registerSocketEvents = (io, socket) => {
   });
 
 
-  // Add thread reply
-  socket.on("thread-reply", async (replyObj) => {
-    try {
-      const { messageId, content } = replyObj;
+  // // Add thread reply
+  // socket.on("thread-reply", async (replyObj) => {
+  //   try {
+  //     const { messageId, content } = replyObj;
 
-      const messageDoc = await MessageModel.findOne({
-        _id: messageId,
-        isMessageActive: true,
-      });
+  //     const messageDoc = await MessageModel.findOne({
+  //       _id: messageId,
+  //       isMessageActive: true,
+  //     });
 
-      if (!messageDoc) {
-        return socket.emit("socket-error", {
-          message: "Message not found",
-          error: "Invalid message id",
-        });
-      }
+  //     if (!messageDoc) {
+  //       return socket.emit("socket-error", {
+  //         message: "Message not found",
+  //         error: "Invalid message id",
+  //       });
+  //     }
 
-      messageDoc.threadReplies.push({
-        sender: socket.user?.id,
-        content,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+  //     messageDoc.threadReplies.push({
+  //       sender: socket.user?.id,
+  //       content,
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //     });
 
-      await messageDoc.save();
+  //     await messageDoc.save();
 
-      if (messageDoc.messageType === "CHANNEL") {
-        io.to(`channel-${messageDoc.channel}`).emit("thread-reply-added", {
-          message: "Thread reply added",
-          payload: messageDoc,
-        });
-      }
+  //     if (messageDoc.messageType === "CHANNEL") {
+  //       io.to(`channel-${messageDoc.channel}`).emit("thread-reply-added", {
+  //         message: "Thread reply added",
+  //         payload: messageDoc,
+  //       });
+  //     }
 
-      if (messageDoc.messageType === "DIRECT") {
-        const roomId = [messageDoc.sender.toString(), messageDoc.receiver.toString()].sort().join("-");
+  //     if (messageDoc.messageType === "DIRECT") {
+  //       const roomId = [messageDoc.sender.toString(), messageDoc.receiver.toString()].sort().join("-");
 
-        io.to(`dm-${roomId}`).emit("thread-reply-added", {
-          message: "Thread reply added",
-          payload: messageDoc,
-        });
-      }
+  //       io.to(`dm-${roomId}`).emit("thread-reply-added", {
+  //         message: "Thread reply added",
+  //         payload: messageDoc,
+  //       });
+  //     }
 
-    } catch (err) {
-      socket.emit("socket-error", {
-        message: "Error adding thread reply",
-        error: err.message,
-      });
-    }
-  });
+  //   } catch (err) {
+  //     socket.emit("socket-error", {
+  //       message: "Error adding thread reply",
+  //       error: err.message,
+  //     });
+  //   }
+  // });
 
 
   // File shared after REST upload
