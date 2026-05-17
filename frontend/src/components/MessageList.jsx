@@ -12,7 +12,7 @@ const getErrorMessage = (err) =>
   err?.response?.data?.message ||
   err?.message ||
   "Unable to load messages";
-
+// MessageList component is used in both ChannelScreen and DirectMessageScreen to display messages.
 function MessageList({
   messages: messagesProp,
   currentUser,
