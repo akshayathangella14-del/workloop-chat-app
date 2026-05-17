@@ -426,14 +426,59 @@ messageApp.post("/file-message", verifyToken("USER", "ADMIN"), upload.single("fi
     };
 
     const newMessage = new MessageModel(messageObj);
+
     await newMessage.save();
+
     scheduleMessageReminder(newMessage);
 
+    const populatedMessage =
+      await MessageModel.findById(newMessage._id)
+        .populate(
+          "sender",
+          "firstName lastName email profileImageUrl"
+        )
+        .populate(
+          "receiver",
+          "firstName lastName email profileImageUrl"
+        )
+        .populate(
+          "reactions.user",
+          "firstName lastName email profileImageUrl"
+        );
+
+    const io = getIO();
+
+    if (messageObj.messageType === "DIRECT") {
+
+      const roomId = [
+        populatedMessage.sender._id.toString(),
+        populatedMessage.receiver._id.toString(),
+      ]
+        .sort()
+        .join("-");
+
+      io.to(`dm-${roomId}`).emit(
+        "receive-message",
+        {
+          payload: populatedMessage,
+        }
+      );
+
+    } else {
+
+      io.to(`channel-${messageObj.channel}`).emit(
+        "receive-message",
+        {
+          payload: populatedMessage,
+        }
+      );
+    }
 
     res.status(201).json({
       message: "File shared successfully",
-      payload: newMessage,
+      payload: populatedMessage,
     });
+
 
   } catch (err) {
     res.status(500).json({

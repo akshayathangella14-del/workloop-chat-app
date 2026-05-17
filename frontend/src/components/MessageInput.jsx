@@ -152,9 +152,10 @@ function MessageInput({
 
       const res = file ? await sendFileMessage() : await sendTextMessage();
 
-      if (res.data?.payload) {
-   sendSocketMessage(res.data.payload);
-}
+      if (!file && res.data?.payload) {
+        sendSocketMessage(res.data.payload);
+      }
+
 
       resetForm();
       setSuccess("Message sent");
