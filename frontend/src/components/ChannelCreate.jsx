@@ -213,14 +213,14 @@ function ChannelCreate({
           )}
         </div>
 
-        {/* Channel type */}
+        {/* Channel type
         <div style={formGroup}>
           <label
             style={label}
             htmlFor="channelType"
           >
             Channel type
-          </label>
+          </label> */}
 
           <select
             id="channelType"
