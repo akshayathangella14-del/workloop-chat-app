@@ -1,32 +1,34 @@
 export const colors = {
-  sidebar: "#1d1028",
-  sidebarSoft: "#2a1737",
-  sidebarActive: "#3f2352",
-  sidebarText: "#e8dfee",
-  sidebarMuted: "#b9a8c4",
+  sidebar: "#0F172A",
+  sidebarSoft: "#1E293B",
+  sidebarActive: "#334155",
+  sidebarText: "#F8FAFC",
+  sidebarMuted: "#94A3B8",
 
-  primary: "#611f69",
-  primaryDark: "#4a154b",
-  accent: "#1264a3",
+  primary: "#0F172A",
+  primaryDark: "#111827",
+  accent: "#14B8A6",
+  accentHover: "#0D9488",
+  highlight: "#22D3EE",
 
-  bg: "#f8f8f8",
-  panel: "#ffffff",
-  panelSoft: "#f4f4f5",
-  border: "#e4e4e7",
-  borderDark: "#d4d4d8",
+  bg: "#F8FAFC",
+  panel: "#FFFFFF",
+  panelSoft: "#F1F5F9",
+  border: "#E2E8F0",
+  borderDark: "#CBD5E1",
 
-  text: "#1d1c1d",
-  muted: "#616061",
-  lightText: "#8a8a8e",
+  text: "#0F172A",
+  muted: "#64748B",
+  lightText: "#94A3B8",
 
-  success: "#2e7d32",
-  warning: "#b7791f",
-  danger: "#c62828",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
 
-  lowBg: "#f4f4f5",
-  mediumBg: "#fff7e6",
-  highBg: "#fff1f2",
-  infoBg: "#eef6ff",
+  lowBg: "#F1F5F9",
+  mediumBg: "#FEF3C7",
+  highBg: "#FEE2E2",
+  infoBg: "#CCFBF1",
 };
 
 export const appBase = {
@@ -35,6 +37,8 @@ export const appBase = {
   color: colors.text,
   fontFamily:
     'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  WebkitFontSmoothing: "antialiased",
+  MozOsxFontSmoothing: "grayscale",
 };
 
 export const rootLayout = {
@@ -182,23 +186,27 @@ export const select = {
 export const primaryBtn = {
   border: "none",
   borderRadius: "8px",
-  padding: "10px 14px",
-  backgroundColor: colors.primary,
+  padding: "10px 16px",
+  backgroundColor: colors.accent,
   color: "#ffffff",
   fontSize: "14px",
-  fontWeight: 750,
+  fontWeight: 600,
   cursor: "pointer",
+  transition: "all 0.2s ease",
+  boxShadow: "0 2px 4px rgba(20, 184, 166, 0.2)",
 };
 
 export const secondaryBtn = {
   border: `1px solid ${colors.border}`,
   borderRadius: "8px",
-  padding: "10px 14px",
-  backgroundColor: colors.panelSoft,
+  padding: "9px 15px",
+  backgroundColor: colors.panel,
   color: colors.text,
   fontSize: "14px",
-  fontWeight: 750,
+  fontWeight: 600,
   cursor: "pointer",
+  transition: "all 0.2s ease",
+  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.05)",
 };
 
 export const ghostBtn = {
@@ -208,19 +216,21 @@ export const ghostBtn = {
   backgroundColor: "transparent",
   color: colors.muted,
   fontSize: "14px",
-  fontWeight: 700,
+  fontWeight: 600,
   cursor: "pointer",
+  transition: "background-color 0.2s ease, color 0.2s ease",
 };
 
 export const dangerBtn = {
   border: "none",
   borderRadius: "8px",
-  padding: "10px 14px",
+  padding: "10px 16px",
   backgroundColor: colors.highBg,
   color: colors.danger,
   fontSize: "14px",
-  fontWeight: 750,
+  fontWeight: 600,
   cursor: "pointer",
+  transition: "all 0.2s ease",
 };
 
 export const iconBtn = {
@@ -234,6 +244,7 @@ export const iconBtn = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
+  transition: "background-color 0.2s ease, color 0.2s ease",
 };
 
 export const fullWidth = {
@@ -262,9 +273,9 @@ export const mutedText = {
 export const card = {
   backgroundColor: colors.panel,
   border: `1px solid ${colors.border}`,
-  borderRadius: "12px",
-  boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
-  padding: "18px",
+  borderRadius: "16px",
+  boxShadow: "0 4px 20px rgba(15, 23, 42, 0.04)",
+  padding: "24px",
   boxSizing: "border-box",
 };
 
@@ -405,28 +416,33 @@ export const contentArea = {
 };
 
 export const workspaceHeader = {
-  minHeight: "72px",
-  padding: "16px 22px",
+  minHeight: "70px",
+  padding: "16px 24px",
   borderBottom: `1px solid ${colors.border}`,
   backgroundColor: colors.panel,
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "16px",
+  gap: "14px",
   boxSizing: "border-box",
+  position: "sticky",
+  top: 0,
+  zIndex: 10,
 };
 
 export const workspaceHeaderTitle = {
   margin: 0,
   color: colors.text,
   fontSize: "20px",
-  fontWeight: 850,
+  fontWeight: 800,
+  letterSpacing: "-0.01em",
 };
 
 export const workspaceHeaderMeta = {
   margin: "4px 0 0",
   color: colors.muted,
   fontSize: "13px",
+  lineHeight: 1.4,
 };
 
 export const dashboard = {
@@ -556,10 +572,11 @@ export const messageList = {
 
 export const messageItem = {
   display: "grid",
-  gridTemplateColumns: "38px minmax(0, 1fr)",
-  gap: "12px",
-  padding: "10px 8px",
-  borderRadius: "8px",
+  gridTemplateColumns: "44px minmax(0, 1fr)",
+  gap: "14px",
+  padding: "14px 16px",
+  borderRadius: "12px",
+  transition: "background-color 0.2s ease",
 };
 
 export const messageItemActive = {
@@ -568,16 +585,16 @@ export const messageItemActive = {
 };
 
 export const avatar = {
-  width: "38px",
-  height: "38px",
-  borderRadius: "9px",
-  backgroundColor: colors.primary,
+  width: "44px",
+  height: "44px",
+  borderRadius: "12px",
+  backgroundColor: colors.primaryDark,
   color: "#ffffff",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "14px",
-  fontWeight: 850,
+  fontSize: "16px",
+  fontWeight: 700,
   overflow: "hidden",
   flex: "0 0 auto",
 };
@@ -602,8 +619,8 @@ export const messageTopline = {
 
 export const senderName = {
   color: colors.text,
-  fontSize: "14px",
-  fontWeight: 850,
+  fontSize: "15px",
+  fontWeight: 700,
 };
 
 export const messageTime = {
@@ -615,9 +632,27 @@ export const messageText = {
   margin: "4px 0 0",
   color: colors.text,
   fontSize: "15px",
-  lineHeight: 1.55,
+  lineHeight: 1.6,
   whiteSpace: "pre-wrap",
   overflowWrap: "break-word",
+};
+
+export const attachment = {
+  marginTop: "12px",
+  padding: "12px",
+  border: `1px solid ${colors.border}`,
+  borderRadius: "8px",
+  backgroundColor: colors.panelSoft,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
+};
+
+export const attachmentLink = {
+  color: colors.accent,
+  fontSize: "14px",
+  fontWeight: 600,
+  textDecoration: "none",
 };
 
 export const deletedMessage = {
@@ -646,36 +681,37 @@ export const messageInputWrap = {
 };
 
 export const messageComposer = {
-  border: `1px solid ${colors.borderDark}`,
-  borderRadius: "12px",
+  border: `1px solid ${colors.border}`,
+  borderRadius: "16px",
   backgroundColor: colors.panel,
-  boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+  boxShadow: "0 4px 20px rgba(15, 23, 42, 0.03)",
   overflow: "hidden",
+  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
 };
 
 export const composerInput = {
   width: "100%",
-  minHeight: "78px",
+  minHeight: "86px",
   border: "none",
   outline: "none",
-  padding: "14px",
+  padding: "16px",
   resize: "vertical",
   color: colors.text,
-  fontSize: "14px",
-  lineHeight: 1.5,
+  fontSize: "15px",
+  lineHeight: 1.6,
   fontFamily: "inherit",
   boxSizing: "border-box",
 };
 
 export const composerToolbar = {
-  minHeight: "48px",
-  padding: "8px 10px",
+  minHeight: "52px",
+  padding: "8px 16px",
   borderTop: `1px solid ${colors.border}`,
-  backgroundColor: colors.panelSoft,
+  backgroundColor: "#FAFAFA",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "10px",
+  gap: "12px",
   boxSizing: "border-box",
 };
 
@@ -757,42 +793,44 @@ export const reactionBar = {
 
 export const reactionBtn = {
   border: `1px solid ${colors.border}`,
-  borderRadius: "999px",
-  backgroundColor: colors.panel,
+  borderRadius: "16px",
+  backgroundColor: colors.panelSoft,
   color: colors.text,
-  minWidth: "36px",
+  minWidth: "40px",
   height: "32px",
   padding: "0 10px",
-  fontSize: "18px",
-  fontWeight: 750,
+  fontSize: "16px",
+  fontWeight: 600,
   cursor: "pointer",
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "5px",
-  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.05)",
+  gap: "6px",
   lineHeight: 1,
+  transition: "all 0.2s ease",
 };
 
 export const reactionBtnActive = {
   ...reactionBtn,
-  backgroundColor: colors.infoBg,
+  backgroundColor: "rgba(20, 184, 166, 0.1)",
   color: colors.accent,
-  border: "1px solid #bfdbfe",
+  border: `1px solid ${colors.accentHover}`,
 };
 
 export const reactionCount = {
   color: colors.muted,
-  fontSize: "11px",
-  fontWeight: 850,
+  fontSize: "12px",
+  fontWeight: 600,
   lineHeight: 1,
 };
 
 export const reactionMoreBtn = {
   ...reactionBtn,
   color: colors.muted,
-  fontSize: "16px",
-  fontWeight: 900,
+  fontSize: "18px",
+  fontWeight: 700,
+  backgroundColor: "transparent",
+  border: "none",
 };
 
 export const reactionPicker = {
@@ -868,46 +906,26 @@ export const fileMeta = {
   fontSize: "12px",
 };
 
-export const attachment = {
-  marginTop: "8px",
-  border: `1px solid ${colors.border}`,
-  borderRadius: "10px",
-  padding: "10px",
-  backgroundColor: colors.panelSoft,
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "10px",
-  maxWidth: "100%",
-  boxSizing: "border-box",
-};
-
-export const attachmentLink = {
-  color: colors.accent,
-  fontSize: "13px",
-  fontWeight: 800,
-  textDecoration: "none",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-};
-
 export const threadPanel = {
-  height: "100%",
+  width: "380px",
   borderLeft: `1px solid ${colors.border}`,
-  backgroundColor: colors.panel,
+  backgroundColor: colors.bg,
   display: "flex",
   flexDirection: "column",
-  minWidth: 0,
+  boxSizing: "border-box",
+  overflow: "hidden",
+  animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
 };
 
 export const threadHeader = {
   minHeight: "66px",
-  padding: "14px 16px",
+  padding: "16px 24px",
   borderBottom: `1px solid ${colors.border}`,
+  backgroundColor: colors.panel,
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "12px",
+  gap: "14px",
   boxSizing: "border-box",
 };
 
@@ -1388,42 +1406,43 @@ export const messageItemHover = {
 
 export const messageQuickActions = {
   position: "absolute",
-  top: "-12px",
-  right: "10px",
+  top: "-16px",
+  right: "16px",
   zIndex: 12,
   display: "flex",
   alignItems: "center",
-  gap: "4px",
-  border: `1px solid ${colors.borderDark}`,
-  borderRadius: "999px",
-  padding: "5px",
+  gap: "6px",
+  border: `1px solid ${colors.border}`,
+  borderRadius: "12px",
+  padding: "6px 8px",
   backgroundColor: "#ffffff",
-  boxShadow: "0 14px 30px rgba(15, 23, 42, 0.15)",
+  boxShadow: "0 4px 24px rgba(15, 23, 42, 0.08)",
 };
 
 export const messageReactionSummary = {
   display: "flex",
   alignItems: "center",
-  gap: "6px",
+  gap: "8px",
   flexWrap: "wrap",
-  marginTop: "8px",
+  marginTop: "12px",
 };
 
 export const actionChip = {
-  border: `1px solid ${colors.border}`,
-  borderRadius: "999px",
-  minHeight: "30px",
-  padding: "0 10px",
-  backgroundColor: "#ffffff",
-  color: colors.muted,
+  border: "none",
+  borderRadius: "8px",
+  minHeight: "32px",
+  padding: "0 12px",
+  backgroundColor: colors.panelSoft,
+  color: colors.text,
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "5px",
-  fontSize: "12px",
-  fontWeight: 850,
+  gap: "6px",
+  fontSize: "13px",
+  fontWeight: 600,
   cursor: "pointer",
   whiteSpace: "nowrap",
+  transition: "background-color 0.2s ease",
 };
 
 export const emojiPickerPanel = {

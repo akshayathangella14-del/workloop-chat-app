@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/authStore";
+import Logo from "./Logo";
 import {
   authCard,
   authSubtitle,
@@ -112,9 +113,12 @@ function Login() {
   return (
     <div style={pageCenter}>
       <section style={authCard}>
-        <h1 style={authTitle}>Sign in to your workspace</h1>
-        <p style={authSubtitle}>
-          Continue to your channels, direct messages, reminders, and team updates.
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+          <Logo width={48} height={48} />
+        </div>
+        <h1 style={{...authTitle, textAlign: "center"}}>Sign in to WorkLoop</h1>
+        <p style={{...authSubtitle, textAlign: "center"}}>
+          Continue to your premium collaboration workspace.
         </p>
 
         {error && <p style={errorText}>{error}</p>}
@@ -166,7 +170,7 @@ function Login() {
         </form>
 
         <p style={{ ...mutedText, textAlign: "center", marginTop: "18px" }}>
-          New to Slack Clone?{" "}
+          New to WorkLoop?{" "}
           <NavLink to="/register" style={linkText}>
             Create an account
           </NavLink>

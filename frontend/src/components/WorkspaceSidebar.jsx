@@ -19,6 +19,7 @@ import {
   workspaceName,
 } from "../styles/common";
 import ProfileMenu from "./ProfileMenu";
+import Logo from "./Logo";
 
 const getId = (value) => {
   if (!value) return "";
@@ -80,14 +81,19 @@ function WorkspaceSidebar({
   return (
     <aside style={sidebar}>
       <div style={sidebarHeader}>
-        <h2 style={workspaceName}>
-          {currentWorkspace?.workspaceName || "WorkLoop"}
-        </h2>
-        <p style={workspaceMeta}>
-          {currentWorkspace
-            ? `${currentWorkspace.members?.length || 0} members`
-            : "Choose or create a workspace"}
-        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <Logo width={32} height={32} />
+          <div>
+            <h2 style={workspaceName}>
+              {currentWorkspace?.workspaceName || "WorkLoop"}
+            </h2>
+            <p style={workspaceMeta}>
+              {currentWorkspace
+                ? `${currentWorkspace.members?.length || 0} members`
+                : "Choose or create a workspace"}
+            </p>
+          </div>
+        </div>
       </div>
 
       <div style={sidebarBody}>

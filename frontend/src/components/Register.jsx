@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 import {
   authCard,
   authSubtitle,
@@ -208,9 +209,12 @@ function Register() {
   return (
     <div style={pageCenter}>
       <section style={authCard}>
-        <h1 style={authTitle}>Create your account</h1>
-        <p style={authSubtitle}>
-          Join your team workspace and start collaborating in channels and direct messages.
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+          <Logo width={48} height={48} />
+        </div>
+        <h1 style={{...authTitle, textAlign: "center"}}>Create your account</h1>
+        <p style={{...authSubtitle, textAlign: "center"}}>
+          Join your team and experience premium collaboration.
         </p>
 
         {apiError && <p style={errorText}>{apiError}</p>}

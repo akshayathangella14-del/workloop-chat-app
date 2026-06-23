@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/authStore";
 import ProfileMenu from "./ProfileMenu";
-import logo from "../assets/workloop-logo.png";
+import Logo from "./Logo";
 import {
   brand,
   brandMark,
@@ -23,15 +23,8 @@ function Header() {
   return (
     <header style={headerBar}>
       <NavLink to="/" style={brand}>
-        <img
-          src={logo}
-          alt="WorkLoop"
-          style={{
-            height: "170px",
-            width: "auto",
-            objectFit: "contain",
-          }}
-        />
+        <Logo width={32} height={32} />
+        WorkLoop
       </NavLink>
 
       <nav style={navActions}>
