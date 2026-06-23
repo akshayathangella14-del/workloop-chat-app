@@ -58,23 +58,23 @@ export default function Home() {
       </header>
 
       {/* SECTION 1: HERO */}
-      <section style={{ position: "relative", paddingTop: "160px", paddingBottom: "100px", overflow: "hidden" }}>
+      <section style={{ position: "relative", paddingTop: "120px", paddingBottom: "60px", minHeight: "90vh", display: "flex", alignItems: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "-20%", left: "-10%", width: "600px", height: "600px", background: theme.accent, filter: "blur(180px)", opacity: 0.15, borderRadius: "50%" }} />
         <div style={{ position: "absolute", bottom: "-20%", right: "-10%", width: "600px", height: "600px", background: "#3B82F6", filter: "blur(180px)", opacity: 0.1, borderRadius: "50%" }} />
 
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
+        <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "center" }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "6px 12px", background: "rgba(34,211,238,0.1)", border: `1px solid rgba(34,211,238,0.2)`, borderRadius: "20px", marginBottom: "24px" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "6px 12px", background: "rgba(34,211,238,0.1)", border: `1px solid rgba(34,211,238,0.2)`, borderRadius: "20px", marginBottom: "20px" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: theme.accent, boxShadow: `0 0 10px ${theme.accent}` }} />
-              <span style={{ color: theme.accent, fontSize: "13px", fontWeight: 600, letterSpacing: "0.02em" }}>Realtime Collaboration Platform</span>
+              <span style={{ color: theme.accent, fontSize: "12px", fontWeight: 600, letterSpacing: "0.02em" }}>Realtime Collaboration Platform</span>
             </div>
-            <h1 style={{ fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.03em", margin: "0 0 24px 0", background: "linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <h1 style={{ fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.03em", margin: "0 0 20px 0", background: "linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               One Workspace.<br/>Every Conversation.<br/>Zero Chaos.
             </h1>
-            <p style={{ fontSize: "18px", color: theme.muted, lineHeight: 1.6, margin: "0 0 40px 0", maxWidth: "480px" }}>
+            <p style={{ fontSize: "16px", color: theme.muted, lineHeight: 1.6, margin: "0 0 32px 0", maxWidth: "440px" }}>
               WorkLoop brings channels, direct messaging, threads, files, reminders and realtime collaboration together in a single, high-performance workspace.
             </p>
-            <div style={{ display: "flex", gap: "16px" }}>
+            <div style={{ display: "flex", gap: "12px" }}>
               <NavLink to={isAuthenticated ? workspacePath : "/register"} style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: theme.accent, color: theme.bg, padding: "14px 28px", borderRadius: "12px", textDecoration: "none", fontSize: "16px", fontWeight: 600, transition: "all 0.2s" }} onMouseEnter={(e)=>e.currentTarget.style.background=theme.accentHover} onMouseLeave={(e)=>e.currentTarget.style.background=theme.accent}>
                 Launch Workspace <ArrowRight size={18} />
               </NavLink>
@@ -88,13 +88,13 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }} 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
-            style={{ position: "relative", height: "600px", display: "flex", alignItems: "center", justifyContent: "center" }}
+            style={{ position: "relative", height: "450px", display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             {/* Floating UI Elements replacing flat image */}
             <motion.div 
               animate={{ y: [-10, 10, -10] }} 
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              style={{ position: "absolute", width: "380px", height: "240px", background: "rgba(14,26,47,0.8)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "20px", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)", zIndex: 2 }}
+              style={{ position: "absolute", top: "10%", left: "10%", width: "340px", background: "rgba(14,26,47,0.8)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "20px", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)", zIndex: 2 }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px", borderBottom: `1px solid ${theme.cardBorder}`, paddingBottom: "16px", marginBottom: "16px" }}>
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: theme.success, boxShadow: `0 0 8px ${theme.success}` }} />
@@ -127,7 +127,7 @@ export default function Home() {
             <motion.div 
               animate={{ y: [15, -15, 15] }} 
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              style={{ position: "absolute", right: "0", bottom: "10%", width: "240px", background: "rgba(14,26,47,0.9)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "16px", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.5)", zIndex: 3 }}
+              style={{ position: "absolute", right: "-10px", bottom: "20%", width: "220px", background: "rgba(14,26,47,0.9)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "16px", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.5)", zIndex: 3 }}
             >
               <div style={{ fontSize: "13px", fontWeight: 700, color: theme.muted, marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Active Team</div>
               {[1, 2, 3].map(i => (
@@ -144,7 +144,7 @@ export default function Home() {
             <motion.div 
               animate={{ y: [-5, 5, -5] }} 
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              style={{ position: "absolute", left: "-20px", top: "10%", background: "rgba(14,26,47,0.9)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "16px", display: "flex", alignItems: "center", gap: "16px", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.5)", zIndex: 4 }}
+              style={{ position: "absolute", left: "-20px", bottom: "15%", background: "rgba(14,26,47,0.9)", backdropFilter: "blur(20px)", border: `1px solid ${theme.cardBorder}`, borderRadius: "16px", padding: "16px", display: "flex", alignItems: "center", gap: "16px", boxShadow: "0 20px 40px -12px rgba(0,0,0,0.5)", zIndex: 4 }}
             >
               <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "rgba(34,211,238,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: theme.accent }}>
                 <BellRing size={20} />
