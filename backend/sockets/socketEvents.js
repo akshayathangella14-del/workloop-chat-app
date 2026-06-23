@@ -58,13 +58,10 @@ export const registerSocketEvents = (io, socket) => {
       }
 
       if (newMessage.messageType === "DIRECT") {
+        const senderId = newMessage.sender._id ? newMessage.sender._id.toString() : newMessage.sender.toString();
+        const receiverId = newMessage.receiver._id ? newMessage.receiver._id.toString() : newMessage.receiver.toString();
 
-        const roomId = [
-          newMessage.sender.toString(),
-          newMessage.receiver.toString(),
-        ]
-          .sort()
-          .join("-");
+        const roomId = [senderId, receiverId].sort().join("-");
 
         io.to(`dm-${roomId}`).emit(
           "receive-message",
@@ -74,13 +71,17 @@ export const registerSocketEvents = (io, socket) => {
           }
         );
 
-        io.to(`user-${newMessage.receiver}`).emit(
+        io.to(`user-${receiverId}`).emit(
           "new-notification",
           {
             message: "New notification",
             payload: {
+              _id: `temp-${Date.now()}`,
+              workspace: newMessage.workspace,
               notificationType: "MESSAGE",
               text: "You received a new direct message",
+              isRead: false,
+              createdAt: new Date().toISOString()
             },
           }
         );
@@ -257,7 +258,9 @@ export const registerSocketEvents = (io, socket) => {
     }
 
     if (messageObj.messageType === "DIRECT") {
-      const roomId = [messageObj.sender.toString(), messageObj.receiver.toString()].sort().join("-");
+      const senderId = messageObj.sender._id ? messageObj.sender._id.toString() : messageObj.sender.toString();
+      const receiverId = messageObj.receiver._id ? messageObj.receiver._id.toString() : messageObj.receiver.toString();
+      const roomId = [senderId, receiverId].sort().join("-");
 
       io.to(`dm-${roomId}`).emit("receive-file", {
         message: "File received",
