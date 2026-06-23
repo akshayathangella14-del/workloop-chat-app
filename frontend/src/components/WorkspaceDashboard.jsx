@@ -10,6 +10,8 @@ import ChannelScreen from "./ChannelScreen";
 import DirectMessageScreen from "./DirectMessageScreen";
 import NotificationList from "./NotificationList";
 import ReminderList from "./ReminderList";
+import ActivityFeed from "./ActivityFeed";
+import { Users, Hash, MessageSquare, Plus, BellRing } from "lucide-react";
 import {
   card,
   contentArea,
@@ -187,6 +189,7 @@ function WorkspaceDashboard() {
   const [activeView, setActiveView] = useState("overview");
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState(false);
   const [workspaceForm, setWorkspaceForm] = useState(initialWorkspaceForm);
   const [channelForm, setChannelForm] = useState(initialChannelForm);
   const [loading, setLoading] = useState(true);
@@ -614,124 +617,229 @@ function WorkspaceDashboard() {
     </section>
   );
 
-  const renderChannelForm = () => (
-    <section style={card}>
-      <h2 style={sectionTitle}>Create channel</h2>
-      <p style={sectionSubtitle}>Channels are created inside the current workspace.</p>
+  const renderChannelForm = () => {
+    const templates = [
+      { id: "team", name: "Team Channel", desc: "For a specific team or department", defaultName: "team-", icon: <Users size={20} /> },
+      { id: "project", name: "Project Channel", desc: "For a specific initiative or goal", defaultName: "proj-", icon: <Hash size={20} /> },
+      { id: "announcement", name: "Announcement", desc: "For broadcasting news to everyone", defaultName: "announcements", icon: <BellRing size={20} /> }
+    ];
 
-      <form style={form} onSubmit={handleCreateChannel}>
-        <div style={formGroup}>
-          <label style={label} htmlFor="channelName">
-            Channel name
-          </label>
-          <input
-            id="channelName"
-            value={channelForm.channelName}
-            onChange={(e) =>
-              setChannelForm((prev) => ({ ...prev, channelName: e.target.value }))
-            }
-            placeholder="general"
-            style={input}
-          />
+    return (
+      <div style={{ padding: "40px", maxWidth: "800px", margin: "0 auto", width: "100%" }}>
+        <div style={{ marginBottom: "32px", textAlign: "center" }}>
+          <h2 style={{ fontSize: "28px", fontWeight: 800, color: "#0F172A", margin: "0 0 8px", letterSpacing: "-0.02em" }}>Create a Channel</h2>
+          <p style={{ fontSize: "15px", color: "#64748B", margin: 0 }}>Channels are where your team communicates. They're best when organized around a topic.</p>
         </div>
 
-        <div style={formGroup}>
-          <label style={label} htmlFor="channelType">
-            Channel type
-          </label>
-          <select
-            id="channelType"
-            value={channelForm.channelType}
-            onChange={(e) =>
-              setChannelForm((prev) => ({ ...prev, channelType: e.target.value }))
-            }
-            style={select}
-          >
-            <option value="PUBLIC">Public</option>
-            <option value="PRIVATE">Private</option>
-          </select>
-        </div>
-
-        <div style={formGroup}>
-          <label style={label} htmlFor="channelDescription">
-            Description
-          </label>
-          <textarea
-            id="channelDescription"
-            value={channelForm.description}
-            onChange={(e) =>
-              setChannelForm((prev) => ({ ...prev, description: e.target.value }))
-            }
-            placeholder="What belongs in this channel"
-            style={textarea}
-          />
-        </div>
-
-        <button type="submit" style={primaryBtn} disabled={saving}>
-          {saving ? "Creating..." : "Create channel"}
-        </button>
-      </form>
-    </section>
-  );
-
-  const renderOverview = () => (
-    <div style={dashboardGrid}>
-      <section style={card}>
-        <h2 style={sectionTitle}>Workspace overview</h2>
-        <p style={sectionSubtitle}>
-          {selectedWorkspace?.description || "A focused space for your team."}
-        </p>
-
-        <div style={list}>
-          <article style={listItem}>
-            <div style={listItemMain}>
-              <h3 style={listItemTitle}>Channels</h3>
-              <p style={listItemMeta}>{channels.length} available channels</p>
-            </div>
-          </article>
-
-          <article style={listItem}>
-            <div style={listItemMain}>
-              <h3 style={listItemTitle}>Direct messages</h3>
-              <p style={listItemMeta}>{directUsers.length} workspace teammates</p>
-            </div>
-          </article>
-
-          <article style={listItem}>
-            <div style={listItemMain}>
-              <h3 style={listItemTitle}>Unread notifications</h3>
-              <p style={listItemMeta}>
-                {workspaceNotifications.filter((item) => !item.isRead).length} unread
-              </p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section style={card}>
-        <h2 style={sectionTitle}>Upcoming reminders</h2>
-        <p style={sectionSubtitle}>Priority messages with future reminder times.</p>
-
-        <div style={list}>
-          {workspaceReminders.length === 0 && (
-            <div style={emptyState}>No upcoming reminders.</div>
-          )}
-
-          {workspaceReminders.slice(0, 5).map((reminder) => (
-            <article key={getId(reminder)} style={reminderItem}>
-              <div style={toolbar}>
-                <div style={reminderTime}>{formatDate(reminder.reminderTime)}</div>
-                <span style={getPriorityStyle(reminder.priority)}>
-                  {reminder.priority || "LOW"}
-                </span>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
+          {templates.map(t => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setChannelForm(prev => ({ ...prev, channelName: t.defaultName, description: t.desc }))}
+              style={{
+                padding: "20px",
+                background: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                borderRadius: "16px",
+                textAlign: "left",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                transition: "all 0.2s",
+                boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)"
+              }}
+            >
+              <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: "#F8FAFC", color: "#0F172A", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {t.icon}
               </div>
-              <p style={mutedText}>{reminder.content || "Reminder message"}</p>
-            </article>
+              <div>
+                <h3 style={{ margin: "0 0 4px", fontSize: "15px", fontWeight: 700, color: "#0F172A" }}>{t.name}</h3>
+                <p style={{ margin: 0, fontSize: "13px", color: "#64748B", lineHeight: 1.4 }}>{t.desc}</p>
+              </div>
+            </button>
           ))}
         </div>
-      </section>
-    </div>
-  );
+
+        <section style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "32px", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+          <form style={form} onSubmit={handleCreateChannel}>
+            <div style={formGroup}>
+              <label style={{ display: "block", fontSize: "14px", fontWeight: 700, color: "#0F172A", marginBottom: "8px" }} htmlFor="channelName">
+                Channel name
+              </label>
+              <div style={{ position: "relative" }}>
+                <Hash size={16} color="#94A3B8" style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)" }} />
+                <input
+                  id="channelName"
+                  value={channelForm.channelName}
+                  onChange={(e) => setChannelForm((prev) => ({ ...prev, channelName: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
+                  placeholder="e.g. plan-budget"
+                  style={{ width: "100%", padding: "12px 14px 12px 38px", borderRadius: "10px", border: "1px solid #E2E8F0", fontSize: "15px", outline: "none" }}
+                />
+              </div>
+              <p style={{ margin: "6px 0 0", fontSize: "12px", color: "#94A3B8" }}>Names must be lowercase, without spaces or periods.</p>
+            </div>
+
+            <div style={formGroup}>
+              <label style={{ display: "block", fontSize: "14px", fontWeight: 700, color: "#0F172A", marginBottom: "8px" }} htmlFor="channelDescription">
+                Description <span style={{ color: "#94A3B8", fontWeight: 400 }}>(optional)</span>
+              </label>
+              <textarea
+                id="channelDescription"
+                value={channelForm.description}
+                onChange={(e) => setChannelForm((prev) => ({ ...prev, description: e.target.value }))}
+                placeholder="What's this channel about?"
+                style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1px solid #E2E8F0", fontSize: "15px", outline: "none", minHeight: "80px", resize: "vertical" }}
+              />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "32px" }}>
+              <button type="button" onClick={() => setActiveView("overview")} style={{ padding: "10px 16px", borderRadius: "10px", border: "1px solid #E2E8F0", background: "#FFFFFF", color: "#64748B", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+                Cancel
+              </button>
+              <button type="submit" style={{ padding: "10px 24px", borderRadius: "10px", border: "none", background: "#0F172A", color: "#FFFFFF", fontSize: "14px", fontWeight: 600, cursor: saving ? "not-allowed" : "pointer" }} disabled={saving || !channelForm.channelName.trim()}>
+                {saving ? "Creating..." : "Create Channel"}
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    );
+  };
+
+  const renderOverview = () => {
+    // Generate some mock activities based on real data
+    const activities = [];
+    
+    // Add members as activity
+    selectedWorkspace.members?.forEach((member, i) => {
+      activities.push({
+        id: `member-${i}`,
+        actor: member.firstName ? `${member.firstName} ${member.lastName}` : member.email,
+        action: "joined the workspace",
+        timestamp: new Date(Date.now() - Math.random() * 86400000 * 3).toISOString(), // random time within 3 days
+        icon: <Users size={16} />,
+        iconBg: "#EFF6FF",
+        iconColor: "#3B82F6",
+      });
+    });
+    
+    // Add channels as activity
+    channels.forEach((channel, i) => {
+      activities.push({
+        id: `channel-${i}`,
+        actor: channel.createdBy?.firstName || "Someone",
+        action: "created channel",
+        target: `#${channel.channelName}`,
+        timestamp: channel.createdAt || new Date().toISOString(),
+        icon: <Hash size={16} />,
+        iconBg: "#F0FDFA",
+        iconColor: "#14B8A6",
+      });
+    });
+    
+    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    return (
+      <div style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "32px", flex: 1, overflowY: "auto" }}>
+        <div>
+          <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#0F172A", margin: 0, letterSpacing: "-0.02em" }}>
+            {selectedWorkspace.workspaceName}
+          </h1>
+          <p style={{ fontSize: "15px", color: "#64748B", margin: "6px 0 0", maxWidth: "600px", lineHeight: 1.5 }}>
+            {selectedWorkspace.description || "Your team's central command. Everything happening in your workspace, at a glance."}
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px", display: "flex", flexDirection: "column", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#EEF2FF", color: "#6366F1", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Users size={20} />
+              </div>
+              <div style={{ fontWeight: 600, color: "#64748B", fontSize: "14px" }}>Active Members</div>
+            </div>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>
+              {visibleOnlineUsers.length} <span style={{ fontSize: "16px", color: "#94A3B8", fontWeight: 600 }}>/ {selectedWorkspace.members?.length || 1}</span>
+            </div>
+          </div>
+          
+          <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px", display: "flex", flexDirection: "column", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#F0FDFA", color: "#14B8A6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Hash size={20} />
+              </div>
+              <div style={{ fontWeight: 600, color: "#64748B", fontSize: "14px" }}>Active Channels</div>
+            </div>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>
+              {channels.length}
+            </div>
+          </div>
+
+          <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "20px", display: "flex", flexDirection: "column", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+              <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "#FEF2F2", color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <BellRing size={20} />
+              </div>
+              <div style={{ fontWeight: 600, color: "#64748B", fontSize: "14px" }}>Unread Alerts</div>
+            </div>
+            <div style={{ fontSize: "36px", fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>
+              {workspaceNotifications.filter((item) => !item.isRead).length}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "32px", alignItems: "start" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: 800, color: "#0F172A", margin: "0 0 24px" }}>Recent Activity</h2>
+            {activities.length > 0 ? (
+              <ActivityFeed activities={activities.slice(0, 10)} />
+            ) : (
+              <p style={{ color: "#94A3B8", fontSize: "14px" }}>No recent activity to show.</p>
+            )}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+              <h2 style={{ fontSize: "16px", fontWeight: 800, color: "#0F172A", margin: "0 0 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                Quick Actions
+              </h2>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <button onClick={() => setActiveView("create-channel")} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", border: "1px solid #E2E8F0", borderRadius: "10px", background: "transparent", color: "#0F172A", fontWeight: 600, fontSize: "14px", cursor: "pointer", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ background: "#F1F5F9", padding: "6px", borderRadius: "8px", color: "#64748B" }}><Plus size={16}/></div>
+                  Create a channel
+                </button>
+                <button onClick={() => setActiveView("members")} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", border: "1px solid #E2E8F0", borderRadius: "10px", background: "transparent", color: "#0F172A", fontWeight: 600, fontSize: "14px", cursor: "pointer", textAlign: "left", transition: "all 0.2s" }}>
+                  <div style={{ background: "#F1F5F9", padding: "6px", borderRadius: "8px", color: "#64748B" }}><Users size={16}/></div>
+                  Invite team members
+                </button>
+              </div>
+            </div>
+
+            <div style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: "16px", padding: "24px", boxShadow: "0 4px 20px rgba(15,23,42,0.03)" }}>
+              <h2 style={{ fontSize: "16px", fontWeight: 800, color: "#0F172A", margin: "0 0 16px" }}>Upcoming Reminders</h2>
+              {workspaceReminders.length === 0 ? (
+                <p style={{ color: "#94A3B8", fontSize: "14px", margin: 0 }}>No upcoming reminders.</p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {workspaceReminders.slice(0, 3).map((reminder) => (
+                    <div key={getId(reminder)} style={{ padding: "12px", border: "1px solid #E2E8F0", borderRadius: "10px", background: "#F8FAFC" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                        <span style={{ fontSize: "12px", fontWeight: 700, color: "#0F172A" }}>{formatDate(reminder.reminderTime)}</span>
+                        <span style={{ fontSize: "11px", fontWeight: 800, color: reminder.priority === "HIGH" ? "#EF4444" : "#64748B" }}>{reminder.priority || "LOW"}</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: "13px", color: "#475569", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{reminder.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -809,20 +917,17 @@ function WorkspaceDashboard() {
             />
           </section>
         )}
-        {activeView === "notifications" && (
-          <section style={card}>
-            <h2 style={sectionTitle}>Notifications</h2>
-            <p style={sectionSubtitle}>
-              Message, thread, reaction, and reminder updates.
-            </p>
-            <NotificationList
-              workspaceId={getId(selectedWorkspace)}
-              onNotificationsChange={setNotifications}
-              onRefresh={loadNotifications}
-            />
-          </section>
-        )}
+
         {activeView === "overview" && renderOverview()}
+
+        <NotificationList
+          isOpen={isNotificationDrawerOpen}
+          onClose={() => setIsNotificationDrawerOpen(false)}
+          notifications={notifications}
+          workspaceId={getId(selectedWorkspace)}
+          onNotificationsChange={setNotifications}
+          onRefresh={loadNotifications}
+        />
       </div>
     );
   };
@@ -864,11 +969,7 @@ function WorkspaceDashboard() {
 
 
         onOpenNotifications={() => {
-          setSelectedChannel(null);
-          setSelectedUser(null);
-          setActiveView("notifications");
-
-          loadNotifications().catch(() => { });
+          setIsNotificationDrawerOpen(true);
         }}
         onSelectChannel={(channel) => {
           setSelectedChannel(channel);
