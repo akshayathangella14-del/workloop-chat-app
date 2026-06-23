@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   MessageSquare, Hash, Users, BellRing, Clock, File, 
   Zap, Shield, ArrowRight, CheckCircle2, Cpu,
-  Inbox, Workflow, ZapIcon, Globe, Lock, PlayCircle
+  Inbox, Workflow, ZapIcon, Globe, Lock, PlayCircle, Layout
 } from "lucide-react";
 import Logo from "./Logo";
 import { useRef } from "react";
