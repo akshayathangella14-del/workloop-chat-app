@@ -1,8 +1,6 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useChat } from "../store/chatStore";
 import MessageItem from "./MessageItem";
-
 import {
   avatar,
   avatarImage,
@@ -23,22 +21,7 @@ import {
   threadTitle,
   toolbar,
 } from "../styles/common";
-
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:5000";
-
-const requestConfig = {
-  withCredentials: true,
-};
-
-const getId = (value) => {
-  if (!value) return "";
-
-  if (typeof value === "string") return value;
-
-  return value._id || value.id || "";
-};
+import { api, getId } from "../services/api";
 
 const getFullName = (user) => {
   const name =
@@ -90,9 +73,8 @@ function ThreadPanel({
       setLoading(true);
       setError("");
 
-      const res = await axios.get(
-        `${BASE_URL}/message-api/thread-replies/${messageId}`,
-        requestConfig
+      const res = await api.get(
+        `/message-api/thread-replies/${messageId}`
       );
 
       setReplies(res.data?.payload || []);
@@ -188,19 +170,23 @@ function ThreadPanel({
       setSending(true);
       setError("");
 
-      const res = await axios.post(
-        `${BASE_URL}/message-api/thread-reply`,
+      const res = await api.post(
+        "/message-api/thread-reply",
         {
           workspace: message.workspace,
           channel: message.channel,
           parentMessage: messageId,
           content: replyText.trim(),
-        },
-        requestConfig
+        }
       );
 
       const newReply = res.data?.payload;
-
+      if (newReply) {
+        setReplies((prev) => {
+          const exists = prev.some((item) => getId(item) === getId(newReply));
+          return exists ? prev : [...prev, newReply];
+        });
+      }
 
       setReplyText("");
     } catch (err) {

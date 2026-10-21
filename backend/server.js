@@ -9,7 +9,7 @@ import { commonApp } from "./APIs/CommonAPI.js";
 import { workspaceApp } from "./APIs/WorkspaceAPI.js";
 import { channelApp } from "./APIs/ChannelAPI.js";
 import { directMessageApp } from "./APIs/DirectMessageAPI.js";
-import { messageApp } from "./APIs/MessageAPI.js";
+import { messageApp, recoverPendingReminders } from "./APIs/MessageAPI.js";
 import { notificationApp } from "./APIs/NotificationAPI.js";
 import { adminApp } from "./APIs/AdminAPI.js";
 
@@ -57,6 +57,8 @@ const connectDB = async () => {
 
     initializeSocket(httpServer);
 
+    await recoverPendingReminders();
+
     httpServer.listen(port, () => console.log(`server listening on ${port}..`));
   } catch (err) {
     console.log("Error in DB connect", err);
@@ -77,6 +79,13 @@ app.use((err, req, res, next) => {
   console.log("Error code:", err.code);
   console.log("Error cause:", err.cause);
   console.log("Full error:", err);
+
+  if (err.name === "MulterError") {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ message: "error occurred", error: "File size exceeds the 10MB limit" });
+    }
+    return res.status(400).json({ message: "error occurred", error: err.message });
+  }
 
   if (err.name === "ValidationError") {
     return res.status(400).json({ message: "error occurred", error: err.message });

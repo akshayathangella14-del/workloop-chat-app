@@ -1,18 +1,9 @@
-import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, UserPlus, X, Filter, Users, Shield, User } from "lucide-react";
 import EmptyState from "./EmptyState";
 import { getPriorityStyle } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
+import { api, getId } from "../services/api";
 
 const getFullName = (user) => {
   const name = `${user?.firstName || ""} ${user?.lastName || ""}`.trim();
@@ -59,14 +50,13 @@ function WorkspaceMembers({ workspace, currentUser, onlineUsers = [], onMemberAd
     try {
       setLoading(true);
       setError("");
-      await axios.put(
-        `${BASE_URL}/workspace-api/workspace/member`,
+      await api.put(
+        "/workspace-api/workspace/member",
         {
           workspaceId: getId(workspace),
           email: email.trim().toLowerCase(),
           role,
-        },
-        requestConfig
+        }
       );
       setEmail("");
       setRole("MEMBER");

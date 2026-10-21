@@ -11,50 +11,98 @@ import { getIO } from "../sockets/socket.js";
 export const messageApp = exp.Router();
 
 
-const scheduleMessageReminder = (
-  messageDoc
-) => {
+const triggerReminder = async (messageId) => {
+  try {
+    const message = await MessageModel.findById(messageId)
+      .populate("sender", "firstName lastName");
+
+    if (!message || message.isReminderTriggered || !message.isMessageActive) {
+      return;
+    }
+
+    await MessageModel.findByIdAndUpdate(messageId, { isReminderTriggered: true });
+
+    let recipientIds = [];
+
+    if (message.messageType === "DIRECT" && message.receiver) {
+      recipientIds = [message.receiver.toString()];
+    } else if (message.messageType === "CHANNEL" && message.workspace) {
+      const workspace = await WorkspaceModel.findById(message.workspace);
+      if (workspace) {
+        recipientIds = workspace.members
+          .map((m) => m.user.toString())
+          .filter((id) => id !== message.sender._id.toString());
+      }
+    }
+
+    const senderName =
+      `${message.sender?.firstName || ""} ${message.sender?.lastName || ""}`.trim() || "Someone";
+
+    const notifications = recipientIds.map((userId) => ({
+      user: userId,
+      workspace: message.workspace,
+      channel: message.channel || undefined,
+      message: message._id,
+      notificationType: "REMINDER",
+      text: `Reminder: ${senderName} marked a message as ${message.priority} priority`,
+    }));
+
+    if (notifications.length > 0) {
+      const saved = await NotificationModel.insertMany(notifications);
+
+      try {
+        const io = getIO();
+        saved.forEach((notif) => {
+          io.to(`user-${notif.user.toString()}`).emit("new-notification", {
+            message: "Reminder notification",
+            payload: notif,
+          });
+        });
+      } catch {
+        // Socket may not be ready during startup recovery — notifications are persisted in DB
+      }
+    }
+
+    console.log(`Reminder triggered for message ${messageId}`);
+  } catch (err) {
+    console.log("Reminder error:", err.message);
+  }
+};
+
+const scheduleMessageReminder = (messageDoc) => {
   if (!messageDoc.reminderTime) {
     return;
   }
 
-  const reminderDate = new Date(
-    messageDoc.reminderTime
-  );
-
-  const delay =
-    reminderDate.getTime() - Date.now();
+  const reminderDate = new Date(messageDoc.reminderTime);
+  const delay = reminderDate.getTime() - Date.now();
 
   if (delay <= 0) {
-    MessageModel.findByIdAndUpdate(
-      messageDoc._id,
-      {
-        isReminderTriggered: true,
-      }
-    ).catch(() => { });
-
+    triggerReminder(messageDoc._id);
     return;
   }
 
-  setTimeout(async () => {
-    try {
-      await MessageModel.findByIdAndUpdate(
-        messageDoc._id,
-        {
-          isReminderTriggered: true,
-        }
-      );
-
-      console.log(
-        `Reminder triggered for message ${messageDoc._id}`
-      );
-    } catch (err) {
-      console.log(
-        "Reminder error",
-        err.message
-      );
-    }
+  setTimeout(() => {
+    triggerReminder(messageDoc._id);
   }, delay);
+};
+
+export const recoverPendingReminders = async () => {
+  try {
+    const pending = await MessageModel.find({
+      reminderTime: { $ne: null },
+      isReminderTriggered: false,
+      isMessageActive: true,
+    });
+
+    pending.forEach((msg) => scheduleMessageReminder(msg));
+
+    if (pending.length > 0) {
+      console.log(`Recovered ${pending.length} pending reminders`);
+    }
+  } catch (err) {
+    console.log("Error recovering reminders:", err.message);
+  }
 };
 
 
@@ -215,6 +263,25 @@ messageApp.post(
           "Message sent successfully",
         payload: populatedMessage,
       });
+
+      try {
+        const io = getIO();
+        io.to(`channel-${messageObj.channel}`).emit("receive-message", {
+          message: "Message received",
+          payload: populatedMessage,
+        });
+
+        if (workspaceMembers.length > 0 && notifications?.length > 0) {
+          notifications.forEach((notif) => {
+            io.to(`user-${notif.user.toString()}`).emit("new-notification", {
+              message: "New notification",
+              payload: notif,
+            });
+          });
+        }
+      } catch (socketErr) {
+        console.log("Socket emit error in channel-message:", socketErr.message);
+      }
     } catch (err) {
       res.status(500).json({
         message:
@@ -332,7 +399,7 @@ messageApp.post(
       scheduleMessageReminder(newMessage);
 
       // Create DM notification
-      await NotificationModel.create({
+      const dmNotif = await NotificationModel.create({
         user: messageObj.receiver,
         workspace: messageObj.workspace,
         message: newMessage._id,
@@ -371,6 +438,14 @@ messageApp.post(
         "receive-message",
         {
           payload: populatedMessage,
+        }
+      );
+
+      io.to(`user-${messageObj.receiver.toString()}`).emit(
+        "new-notification",
+        {
+          message: "New notification",
+          payload: dmNotif,
         }
       );
 
@@ -578,9 +653,32 @@ messageApp.put("/message", verifyToken("USER", "ADMIN"), async (req, res) => {
       });
     }
 
+    const populatedMessage = await MessageModel.findById(updatedMessage._id)
+      .populate("sender", "firstName lastName email profileImageUrl")
+      .populate("receiver", "firstName lastName email profileImageUrl")
+      .populate("reactions.user", "firstName lastName email profileImageUrl");
+
+    try {
+      const io = getIO();
+      if (updatedMessage.messageType === "CHANNEL") {
+        io.to(`channel-${updatedMessage.channel}`).emit("message-edited", {
+          message: "Message edited",
+          payload: populatedMessage || updatedMessage,
+        });
+      } else if (updatedMessage.messageType === "DIRECT") {
+        const roomId = [updatedMessage.sender.toString(), updatedMessage.receiver.toString()].sort().join("-");
+        io.to(`dm-${roomId}`).emit("message-edited", {
+          message: "Message edited",
+          payload: populatedMessage || updatedMessage,
+        });
+      }
+    } catch (socketErr) {
+      console.log("Socket emit error in edit:", socketErr.message);
+    }
+
     res.status(200).json({
       message: "Message edited successfully",
-      payload: updatedMessage,
+      payload: populatedMessage || updatedMessage,
     });
 
   } catch (err) {
@@ -735,9 +833,32 @@ messageApp.put("/message/reaction", verifyToken("USER", "ADMIN"), async (req, re
 
     await message.save();
 
+    const populatedMessage = await MessageModel.findById(message._id)
+      .populate("sender", "firstName lastName email profileImageUrl")
+      .populate("receiver", "firstName lastName email profileImageUrl")
+      .populate("reactions.user", "firstName lastName email profileImageUrl");
+
+    try {
+      const io = getIO();
+      if (message.messageType === "CHANNEL") {
+        io.to(`channel-${message.channel}`).emit("reaction-added", {
+          message: "Reaction added",
+          payload: populatedMessage || message,
+        });
+      } else if (message.messageType === "DIRECT") {
+        const roomId = [message.sender.toString(), message.receiver.toString()].sort().join("-");
+        io.to(`dm-${roomId}`).emit("reaction-added", {
+          message: "Reaction added",
+          payload: populatedMessage || message,
+        });
+      }
+    } catch (socketErr) {
+      console.log("Socket emit error in add reaction:", socketErr.message);
+    }
+
     res.status(200).json({
       message: "Reaction updated successfully",
-      payload: message,
+      payload: populatedMessage || message,
     });
 
   } catch (err) {
@@ -770,9 +891,32 @@ messageApp.patch("/message/reaction", verifyToken("USER", "ADMIN"), async (req, 
 
     await message.save();
 
+    const populatedMessage = await MessageModel.findById(message._id)
+      .populate("sender", "firstName lastName email profileImageUrl")
+      .populate("receiver", "firstName lastName email profileImageUrl")
+      .populate("reactions.user", "firstName lastName email profileImageUrl");
+
+    try {
+      const io = getIO();
+      if (message.messageType === "CHANNEL") {
+        io.to(`channel-${message.channel}`).emit("reaction-removed", {
+          message: "Reaction removed",
+          payload: populatedMessage || message,
+        });
+      } else if (message.messageType === "DIRECT") {
+        const roomId = [message.sender.toString(), message.receiver.toString()].sort().join("-");
+        io.to(`dm-${roomId}`).emit("reaction-removed", {
+          message: "Reaction removed",
+          payload: populatedMessage || message,
+        });
+      }
+    } catch (socketErr) {
+      console.log("Socket emit error in remove reaction:", socketErr.message);
+    }
+
     res.status(200).json({
       message: "Reaction removed successfully",
-      payload: message,
+      payload: populatedMessage || message,
     });
 
   } catch (err) {
@@ -927,6 +1071,24 @@ messageApp.patch("/message/status", verifyToken("USER", "ADMIN"), async (req, re
         message: "You are not authorised",
         error: "Only sender can update message status",
       });
+    }
+
+    try {
+      const io = getIO();
+      if (updatedMessage.messageType === "CHANNEL") {
+        io.to(`channel-${updatedMessage.channel}`).emit("message-deleted", {
+          message: "Message deleted",
+          payload: updatedMessage,
+        });
+      } else if (updatedMessage.messageType === "DIRECT") {
+        const roomId = [updatedMessage.sender.toString(), updatedMessage.receiver.toString()].sort().join("-");
+        io.to(`dm-${roomId}`).emit("message-deleted", {
+          message: "Message deleted",
+          payload: updatedMessage,
+        });
+      }
+    } catch (socketErr) {
+      console.log("Socket emit error in status update:", socketErr.message);
     }
 
     res.status(200).json({

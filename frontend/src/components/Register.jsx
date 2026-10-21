@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
@@ -23,23 +22,7 @@ import {
   successText,
 } from "../styles/common";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-const initialForm = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  role: "USER",
-  profileImageUrl: null,
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Registration failed";
+import { api, getErrorMessage } from "../services/api";
 
 function Register() {
   const navigate = useNavigate();
@@ -179,8 +162,7 @@ function Register() {
       setApiError("");
       setSuccess("");
 
-      await axios.post(`${BASE_URL}/auth/users`, buildPayload(), {
-        withCredentials: true,
+      await api.post("/auth/users", buildPayload(), {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -1,14 +1,5 @@
 import { create } from "zustand";
-import axios from "axios";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getErrorMessage = (err, fallback) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  fallback;
+import { api, getErrorMessage } from "../services/api";
 
 export const useAuth = create((set) => ({
   currentUser: null,
@@ -26,7 +17,7 @@ export const useAuth = create((set) => ({
         error: null,
       });
 
-      const res = await axios.post(`${BASE_URL}/auth/login`, userCred, requestConfig);
+      const res = await api.post("/auth/login", userCred);
 
       if (res.status === 200) {
         set({
@@ -53,7 +44,7 @@ export const useAuth = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const res = await axios.get(`${BASE_URL}/auth/logout`, requestConfig);
+      const res = await api.get("/auth/logout");
 
       if (res.status === 200) {
         set({
@@ -79,7 +70,7 @@ export const useAuth = create((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const res = await axios.get(`${BASE_URL}/auth/check-auth`, requestConfig);
+      const res = await api.get("/auth/check-auth");
 
       set({
         currentUser: res.data?.payload,

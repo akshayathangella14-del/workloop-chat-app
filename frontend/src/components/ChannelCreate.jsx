@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 import {
@@ -16,36 +15,13 @@ import {
   textarea,
 } from "../styles/common";
 
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-const requestConfig = {
-  withCredentials: true,
-};
+import { api, getId, getErrorMessage } from "../services/api";
 
 const initialForm = {
   channelName: "",
   description: "",
   channelType: "PUBLIC",
 };
-
-// Get id safely
-const getId = (value) => {
-  if (!value) return "";
-
-  if (typeof value === "string") {
-    return value;
-  }
-
-  return value._id || value.id || "";
-};
-
-// Extract readable error message
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to create channel";
 
 function ChannelCreate({
   workspace,
@@ -143,8 +119,8 @@ function ChannelCreate({
       setError("");
       setSuccess("");
 
-      const res = await axios.post(
-        `${BASE_URL}/channel-api/channels`,
+      const res = await api.post(
+        "/channel-api/channels",
         {
           workspace: resolvedWorkspaceId,
           channelName:
@@ -153,8 +129,7 @@ function ChannelCreate({
             formData.description.trim(),
           channelType:
             formData.channelType,
-        },
-        requestConfig
+        }
       );
 
       // Reset form after success

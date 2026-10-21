@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -50,24 +49,7 @@ import {
   workspaceMeta,
   workspaceName,
 } from "../styles/common";
-
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-const requestConfig = {
-  withCredentials: true,
-};
-
-// Get object id safely
-const getId = (value) => {
-  if (!value) return "";
-
-  if (typeof value === "string") {
-    return value;
-  }
-
-  return value._id || value.id || "";
-};
+import { getId } from "../services/api";
 
 // Get user display name
 const getFullName = (user) => {

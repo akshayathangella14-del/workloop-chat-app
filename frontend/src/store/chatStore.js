@@ -1,14 +1,6 @@
 import { create } from "zustand";
-import axios from "axios";
 import { io } from "socket.io-client";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const api = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
-});
+import { api, BASE_URL } from "../services/api";
 
 const initialChatState = {
   workspaces: [],
@@ -540,20 +532,29 @@ export const useChat = create((set, get) => ({
     }
   },
 
-  addThreadReply: async (messageId, content) => {
+  addThreadReply: async (payloadOrMessageId, content, workspace, channel) => {
     try {
       set({ saving: true, error: null });
 
-      const res = await api.put("/message-api/message/thread", { messageId, content });
-      const message = res.data?.payload;
+      const payload =
+        typeof payloadOrMessageId === "object"
+          ? payloadOrMessageId
+          : {
+              parentMessage: payloadOrMessageId,
+              content,
+              workspace,
+              channel,
+            };
+
+      const res = await api.post("/message-api/thread-reply", payload);
+      const reply = res.data?.payload;
 
       set((state) => ({
-        messages: message ? upsertById(state.messages, message) : state.messages,
-        threadReplies: message?.threadReplies || state.threadReplies,
+        threadReplies: reply ? [...state.threadReplies, reply] : state.threadReplies,
         saving: false,
       }));
 
-      return message;
+      return reply;
     } catch (err) {
       set({ saving: false, error: getErrorMessage(err, "Unable to add thread reply") });
       return null;
@@ -564,7 +565,7 @@ export const useChat = create((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      const res = await api.get(`/message-api/message/thread/${messageId}`);
+      const res = await api.get(`/message-api/thread-replies/${messageId}`);
       const threadReplies = res.data?.payload || [];
 
       set({ threadReplies, loading: false });
@@ -729,7 +730,17 @@ export const useChat = create((set, get) => ({
     socket.on("message-edited", mergeMessage);
     socket.on("reaction-added", mergeMessage);
     socket.on("reaction-removed", mergeMessage);
-    socket.on("thread-reply-added", mergeMessage);
+    const handleThreadReply = (data) => {
+      const reply = data?.payload;
+      if (!reply) return;
+      set((state) => {
+        const exists = state.threadReplies.some((r) => r._id === reply._id);
+        if (exists) return state;
+        return { threadReplies: [...state.threadReplies, reply] };
+      });
+    };
+    socket.on("receive-thread-reply", handleThreadReply);
+    socket.on("thread-reply-added", handleThreadReply);
 
     socket.on("new-notification", (data) => {
       const notification = data?.payload;

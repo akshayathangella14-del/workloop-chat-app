@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ChatHeader from "./ChatHeader";
@@ -14,21 +13,7 @@ import {
   loading as loadingStyle,
   mutedText,
 } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to load channel";
+import { api, getId, getErrorMessage } from "../services/api";
 
 function ChannelScreen({
   workspace,
@@ -64,7 +49,7 @@ function ChannelScreen({
       return;
     }
 
-    const res = await axios.get(`${BASE_URL}/auth/check-auth`, requestConfig);
+    const res = await api.get("/auth/check-auth");
     setAuthUser(res.data?.payload || null);
   }, [currentUser]);
 
@@ -74,9 +59,8 @@ function ChannelScreen({
       return;
     }
 
-    const res = await axios.get(
-      `${BASE_URL}/channel-api/channel/${resolvedChannelId}`,
-      requestConfig
+    const res = await api.get(
+      `/channel-api/channel/${resolvedChannelId}`
     );
     const nextChannel = res.data?.payload || null;
 

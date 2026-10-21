@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "../store/chatStore";
 import {
@@ -18,21 +17,7 @@ import {
   primaryBtn,
   successText,
 } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to send message";
+import { api, getId, getErrorMessage } from "../services/api";
 
 function MessageInput({
   workspace,
@@ -53,7 +38,6 @@ function MessageInput({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { sendSocketMessage } = useChat();
 
   useEffect(() => {
     if (!success) {
@@ -95,10 +79,10 @@ function MessageInput({
 
   const sendTextMessage = async () => {
     const endpoint = isDirect
-      ? `${BASE_URL}/message-api/direct-message`
-      : `${BASE_URL}/message-api/channel-message`;
+      ? "/message-api/direct-message"
+      : "/message-api/channel-message";
 
-    return axios.post(endpoint, buildBasePayload(), requestConfig);
+    return api.post(endpoint, buildBasePayload());
   };
 
   const sendFileMessage = async () => {
@@ -114,8 +98,7 @@ function MessageInput({
     formData.append("messageType", isDirect ? "DIRECT" : "CHANNEL");
     formData.append("file", file);
 
-    return axios.post(`${BASE_URL}/message-api/file-message`, formData, {
-      withCredentials: true,
+    return api.post("/message-api/file-message", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -151,11 +134,6 @@ function MessageInput({
       setSuccess("");
 
       const res = file ? await sendFileMessage() : await sendTextMessage();
-
-      if (!file && res.data?.payload) {
-        sendSocketMessage(res.data.payload);
-      }
-
 
       resetForm();
       setSuccess("Message sent");

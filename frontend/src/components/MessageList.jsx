@@ -1,17 +1,8 @@
-import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import MessageItem from "./MessageItem";
 import { useChat } from "../store/chatStore";
 import { emptyState, errorText, loading as loadingStyle, messageList } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to load messages";
+import { api, getErrorMessage, getId } from "../services/api";
 // MessageList component is used in both ChannelScreen and DirectMessageScreen to display messages.
 function MessageList({
   messages: messagesProp,
@@ -58,9 +49,8 @@ function MessageList({
           return;
         }
 
-        const res = await axios.get(
-          `${BASE_URL}/dm-api/messages/${workspaceId}/${receiverId}`,
-          requestConfig
+        const res = await api.get(
+          `/dm-api/messages/${workspaceId}/${receiverId}`
         );
         updateMessages(res.data?.payload || []);
         return;
@@ -71,9 +61,8 @@ function MessageList({
         return;
       }
 
-      const res = await axios.get(
-        `${BASE_URL}/message-api/channel-messages/${channelId}`,
-        requestConfig
+      const res = await api.get(
+        `/message-api/channel-messages/${channelId}`
       );
       updateMessages(res.data?.payload || []);
     } catch (err) {
@@ -97,52 +86,75 @@ function MessageList({
     });
   }, [displayedMessages]);
 
-  useEffect(() => {
-
-    if (!socket) {
-      return;
-    }
+    const isMessageRelevant = (msg) => {
+      if (!msg) return false;
+      if (messageType === "DIRECT") {
+        if (msg.messageType !== "DIRECT") return false;
+        const msgSender = getId(msg.sender);
+        const msgReceiver = getId(msg.receiver);
+        const curId = getId(currentUser);
+        return (
+          (msgSender === curId && msgReceiver === receiverId) ||
+          (msgSender === receiverId && msgReceiver === curId)
+        );
+      } else {
+        if (msg.messageType === "DIRECT") return false;
+        const msgChan = getId(msg.channel);
+        return msgChan === getId(channelId);
+      }
+    };
 
     const handleReceiveMessage = (data) => {
-
       const newMessage = data?.payload;
-
-      if (!newMessage) {
-        return;
-      }
+      if (!newMessage || !isMessageRelevant(newMessage)) return;
 
       setMessages((prev) => {
-
-        const exists = prev.some(
-          (item) => item._id === newMessage._id
-        );
-
+        const exists = prev.some((item) => getId(item) === getId(newMessage));
         if (exists) {
-          return prev;
+          return prev.map((item) => (getId(item) === getId(newMessage) ? newMessage : item));
         }
-
         return [...prev, newMessage];
       });
     };
 
+    const handleMessageUpdate = (data) => {
+      const updated = data?.payload;
+      if (!updated || !isMessageRelevant(updated)) return;
+
+      setMessages((prev) =>
+        prev.map((item) => (getId(item) === getId(updated) ? updated : item))
+      );
+    };
+
+    const handleMessageDeleted = (data) => {
+      const deleted = data?.payload;
+      if (!deleted) return;
+      const delId = getId(deleted);
+      setMessages((prev) => prev.filter((item) => getId(item) !== delId));
+    };
+
     socket.on("receive-message", handleReceiveMessage);
+    socket.on("receive-file", handleReceiveMessage);
+    socket.on("message-edited", handleMessageUpdate);
+    socket.on("reaction-added", handleMessageUpdate);
+    socket.on("reaction-removed", handleMessageUpdate);
+    socket.on("message-deleted", handleMessageDeleted);
 
     return () => {
       socket.off("receive-message", handleReceiveMessage);
+      socket.off("receive-file", handleReceiveMessage);
+      socket.off("message-edited", handleMessageUpdate);
+      socket.off("reaction-added", handleMessageUpdate);
+      socket.off("reaction-removed", handleMessageUpdate);
+      socket.off("message-deleted", handleMessageDeleted);
     };
-
-  }, [socket]);
+  }, [socket, messageType, receiverId, channelId, currentUser]);
 
   const handleEdit = async (messageId, content) => {
     try {
       setError("");
 
-      await axios.put(
-        `${BASE_URL}/message-api/message`,
-        { messageId, content },
-        requestConfig
-      );
-
+      await api.put("/message-api/message", { messageId, content });
       await loadMessages();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -160,11 +172,10 @@ function MessageList({
     try {
       setError("");
 
-      await axios.patch(
-        `${BASE_URL}/message-api/message/status`,
-        { messageId, isMessageActive: false },
-        requestConfig
-      );
+      await api.patch("/message-api/message/status", {
+        messageId,
+        isMessageActive: false,
+      });
 
       await loadMessages();
     } catch (err) {
@@ -176,11 +187,10 @@ function MessageList({
     try {
       setError("");
 
-      await axios.put(
-        `${BASE_URL}/message-api/message/reaction`,
-        { messageId, reaction },
-        requestConfig
-      );
+      await api.put("/message-api/message/reaction", {
+        messageId,
+        reaction,
+      });
 
       await loadMessages();
     } catch (err) {
@@ -192,12 +202,7 @@ function MessageList({
     try {
       setError("");
 
-      await axios.patch(
-        `${BASE_URL}/message-api/message/reaction`,
-        { messageId },
-        requestConfig
-      );
-
+      await api.patch("/message-api/message/reaction", { messageId });
       await loadMessages();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -219,14 +224,12 @@ function MessageList({
     try {
       setError("");
 
-      await axios.put(
-        `${BASE_URL}/message-api/message/thread`,
-        {
-          messageId: message._id,
-          content: reply.trim(),
-        },
-        requestConfig
-      );
+      await api.post("/message-api/thread-reply", {
+        workspace: message.workspace,
+        channel: message.channel,
+        parentMessage: message._id,
+        content: reply.trim(),
+      });
 
       await loadMessages();
     } catch (err) {

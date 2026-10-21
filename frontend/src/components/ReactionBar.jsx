@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import {
   errorText,
@@ -10,9 +9,8 @@ import {
   reactionPicker,
   reactionPickerBtn,
 } from "../styles/common";
+import { api, getId, getErrorMessage } from "../services/api";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
 const defaultReactions = ["👍", "❤️", "😂", "🔥"];
 const moreReactions = ["😮", "😢", "🎉", "🚀", "👀", "😎", "🙌", "💯", "✅", "👏", "🙏", "⭐"];
 
@@ -24,18 +22,6 @@ const reactionAliases = {
 };
 
 const normalizeReaction = (reaction) => reactionAliases[reaction] || reaction;
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to update reaction";
 
 const getGroupedReactions = (reactions = []) =>
   reactions.reduce((acc, item) => {
@@ -73,18 +59,16 @@ function ReactionBar({
 
       const res =
         currentUserReaction === reaction
-          ? await axios.patch(
-              `${BASE_URL}/message-api/message/reaction`,
-              { messageId: resolvedMessageId },
-              requestConfig
+          ? await api.patch(
+              "/message-api/message/reaction",
+              { messageId: resolvedMessageId }
             )
-          : await axios.put(
-              `${BASE_URL}/message-api/message/reaction`,
+          : await api.put(
+              "/message-api/message/reaction",
               {
                 messageId: resolvedMessageId,
                 reaction,
-              },
-              requestConfig
+              }
             );
 
       onReactionUpdated?.(res.data?.payload);

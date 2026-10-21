@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import { UserModel } from "../models/UserModel.js";
-import { redisClient } from "../config/redis.js";
+
 import { registerSocketEvents } from "./socketEvents.js";
 
 const { verify } = jwt;
@@ -25,7 +25,10 @@ const getTokenFromCookie = (cookieHeader) => {
 export const initializeSocket = (httpServer) => {
    io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      origin: [
+        "http://localhost:5173",
+        process.env.CLIENT_URL,
+      ].filter(Boolean),
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     },

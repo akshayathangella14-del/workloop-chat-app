@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import {
   errorText,
@@ -11,20 +10,7 @@ import {
   successText,
   toolbar,
 } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to upload file";
+import { api, getId, getErrorMessage } from "../services/api";
 
 const formatFileSize = (size = 0) => {
   if (size < 1024 * 1024) return `${Math.ceil(size / 1024)} KB`;
@@ -132,8 +118,7 @@ function FileUploadBox({
       setError("");
       setSuccess("");
 
-      const res = await axios.post(`${BASE_URL}/message-api/file-message`, buildPayload(), {
-        withCredentials: true,
+      const res = await api.post("/message-api/file-message", buildPayload(), {
         headers: {
           "Content-Type": "multipart/form-data",
         },

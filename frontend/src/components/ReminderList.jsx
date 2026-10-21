@@ -1,17 +1,8 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, CheckCircle, Bell, MoreVertical, Calendar } from "lucide-react";
 import EmptyState from "./EmptyState";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
+import { api, getId } from "../services/api";
 
 const formatTime = (value) => {
   if (!value) return "";
@@ -66,7 +57,7 @@ function ReminderList({
     if (hasControlledReminders) return;
     try {
       setLoading(true);
-      const res = await axios.get(`${BASE_URL}/message-api/reminders`, requestConfig);
+      const res = await api.get("/message-api/reminders");
       updateReminders(res.data?.payload || []);
     } catch (err) {
       console.error(err);

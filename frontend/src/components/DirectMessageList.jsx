@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -19,31 +18,7 @@ import {
   statusLine,
 } from "../styles/common";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
-
-const getFullName = (user) => {
-  const name = `${user?.firstName || ""} ${user?.lastName || ""}`.trim();
-  return name || user?.email || "User";
-};
-
-const getInitials = (user) => {
-  const first = user?.firstName?.trim()?.[0] || "";
-  const last = user?.lastName?.trim()?.[0] || "";
-  return `${first}${last}`.toUpperCase() || "U";
-};
-
-const getErrorMessage = (err) =>
-  err?.response?.data?.error ||
-  err?.response?.data?.message ||
-  err?.message ||
-  "Unable to load direct messages";
+import { api, getId, getErrorMessage } from "../services/api";
 
 const formatTime = (value) => {
   if (!value) return "";
@@ -118,8 +93,8 @@ function DirectMessageList({
       setError("");
 
       const [usersRes, conversationsRes] = await Promise.all([
-        axios.get(`${BASE_URL}/dm-api/users/${workspaceId}`, requestConfig),
-        axios.get(`${BASE_URL}/dm-api/conversations/${workspaceId}`, requestConfig),
+        api.get(`/dm-api/users/${workspaceId}`),
+        api.get(`/dm-api/conversations/${workspaceId}`),
       ]);
 
       const usersList = usersRes.data?.payload || [];

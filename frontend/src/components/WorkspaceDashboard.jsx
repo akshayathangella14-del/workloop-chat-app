@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../store/authStore";
@@ -42,9 +41,7 @@ import {
   textarea,
   workspaceShell,
 } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
+import { getId } from "../services/api";
 
 const initialWorkspaceForm = {
   workspaceName: "",
@@ -55,12 +52,6 @@ const initialChannelForm = {
   channelName: "",
   description: "",
   channelType: "PUBLIC",
-};
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
 };
 
 

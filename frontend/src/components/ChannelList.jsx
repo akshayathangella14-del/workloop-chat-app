@@ -1,18 +1,9 @@
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Hash, Users, Plus } from "lucide-react";
 import EmptyState from "./EmptyState";
 import { loading as loadingStyle } from "../styles/common";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-const requestConfig = { withCredentials: true };
-
-const getId = (value) => {
-  if (!value) return "";
-  if (typeof value === "string") return value;
-  return value._id || value.id || "";
-};
+import { api, getId } from "../services/api";
 
 function ChannelList({
   workspaceId,
@@ -35,7 +26,7 @@ function ChannelList({
     try {
       setLoading(true);
       setError("");
-      const res = await axios.get(`${BASE_URL}/channel-api/channels/${workspaceId}`, requestConfig);
+      const res = await api.get(`/channel-api/channels/${workspaceId}`);
       const listData = res.data?.payload || [];
       setChannels(listData);
       onChannelsLoaded?.(listData);
