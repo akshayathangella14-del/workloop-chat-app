@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../store/authStore";
 import Logo from "./Logo";
 import {
@@ -32,6 +33,7 @@ function Login() {
 
   const [formData, setFormData] = useState(initialForm);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const requestedPath = location.state?.from?.pathname;
 
@@ -104,15 +106,15 @@ function Login() {
 
   if (loading && !isAuthenticated) {
     return (
-      <div style={pageCenter}>
+      <div className="auth-page" style={pageCenter}>
         <div style={loadingStyle}>Signing you in...</div>
       </div>
     );
   }
 
   return (
-    <div style={pageCenter}>
-      <section style={authCard}>
+    <div className="auth-page" style={pageCenter}>
+      <section className="auth-card" style={authCard}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
           <Logo width={48} height={48} />
         </div>
@@ -145,16 +147,27 @@ function Login() {
             <label style={label} htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              style={input}
-            />
+            <div className="auth-password-wrap">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                style={input}
+              />
+              <button
+                className="auth-password-toggle"
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
             {fieldErrors.password && (
               <span style={errorText}>{fieldErrors.password}</span>
             )}

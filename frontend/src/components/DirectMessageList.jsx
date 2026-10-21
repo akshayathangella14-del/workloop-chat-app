@@ -31,6 +31,17 @@ const formatTime = (value) => {
   }).format(new Date(value));
 };
 
+const getFullName = (user) => {
+  const name = `${user?.firstName || ""} ${user?.lastName || ""}`.trim();
+  return name || user?.email || "User";
+};
+
+const getInitials = (user) => {
+  const first = user?.firstName?.trim()?.[0] || "";
+  const last = user?.lastName?.trim()?.[0] || "";
+  return `${first}${last}`.toUpperCase() || "U";
+};
+
 function DirectMessageList({
   workspaceId,
   users: usersProp,

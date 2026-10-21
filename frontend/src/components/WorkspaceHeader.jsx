@@ -1,3 +1,4 @@
+import { Menu } from "lucide-react";
 import {
   secondaryBtn,
   statusDot,
@@ -23,6 +24,7 @@ function WorkspaceHeader({
   onOpenMembers,
   onOpenCreateWorkspace,
   onOpenCreateChannel,
+  onOpenNavigation,
 }) {
   const selectedUserId =
     typeof selectedUser === "string" ? selectedUser : selectedUser?._id || selectedUser?.id;
@@ -53,11 +55,20 @@ function WorkspaceHeader({
   };
 
   return (
-    <header style={workspaceHeader}>
+    <header className="workspace-header" style={workspaceHeader}>
+      <button
+        className="mobile-nav-toggle"
+        type="button"
+        aria-label="Open workspace navigation"
+        aria-controls="workspace-navigation"
+        onClick={onOpenNavigation}
+      >
+        <Menu size={19} aria-hidden="true" />
+      </button>
       <div>
-        <h1 style={workspaceHeaderTitle}>{getTitle()}</h1>
+        <h1 className="workspace-header-title" style={workspaceHeaderTitle}>{getTitle()}</h1>
         {activeView === "direct" && selectedUser ? (
-          <p style={workspaceHeaderMeta}>
+          <p className="workspace-header-meta" style={workspaceHeaderMeta}>
             <span style={statusLine}>
               <span style={isSelectedUserOnline ? statusDotOnline : statusDot} />
               <span>
@@ -67,11 +78,11 @@ function WorkspaceHeader({
             </span>
           </p>
         ) : (
-          <p style={workspaceHeaderMeta}>{getMeta()}</p>
+          <p className="workspace-header-meta" style={workspaceHeaderMeta}>{getMeta()}</p>
         )}
       </div>
 
-      <div style={toolbar}>
+      <div className="workspace-header-toolbar" style={toolbar}>
         {workspace && (
           <>
             <button type="button" style={secondaryBtn} onClick={onOpenMembers}>

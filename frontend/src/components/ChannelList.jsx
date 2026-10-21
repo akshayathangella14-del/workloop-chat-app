@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Hash, Users, Plus } from "lucide-react";
+import { Hash, Plus } from "lucide-react";
 import EmptyState from "./EmptyState";
 import { loading as loadingStyle } from "../styles/common";
 import { api, getId } from "../services/api";
@@ -39,7 +39,11 @@ function ChannelList({
 
   useEffect(() => {
     if (channelsProp) return;
-    loadChannels();
+    const timerId = setTimeout(() => {
+      loadChannels();
+    }, 0);
+
+    return () => clearTimeout(timerId);
   }, [channelsProp, loadChannels]);
 
   if (loading) {
@@ -53,7 +57,7 @@ function ChannelList({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px", marginBottom: "12px" }}>
         <h2 style={{ fontSize: "12px", fontWeight: 800, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Channels</h2>
         {onCreateChannel && (
-          <button onClick={onCreateChannel} style={{ background: "none", border: "none", color: "#94A3B8", cursor: "pointer", display: "flex", alignItems: "center", padding: "4px", borderRadius: "4px" }}>
+          <button type="button" aria-label="Create channel" onClick={onCreateChannel} style={{ background: "none", border: "none", color: "#94A3B8", cursor: "pointer", display: "flex", alignItems: "center", padding: "4px", borderRadius: "4px" }}>
             <Plus size={16} />
           </button>
         )}
@@ -69,7 +73,7 @@ function ChannelList({
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "2px", padding: "0 8px" }}>
-          {visibleChannels.map((channel, idx) => {
+          {visibleChannels.map((channel) => {
             const isActive = getId(channel) === getId(selectedChannel);
             return (
               <motion.button
@@ -96,10 +100,6 @@ function ChannelList({
                     {channel.channelName}
                   </h3>
                 </div>
-                {/* Activity indicator */}
-                {!isActive && idx % 3 === 0 && (
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#14B8A6" }} />
-                )}
               </motion.button>
             );
           })}

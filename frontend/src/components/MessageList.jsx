@@ -26,7 +26,11 @@ function MessageList({
     (message) => !hiddenMessageIds.includes(message._id)
   );
   useEffect(() => {
-    setMessages(messagesProp || []);
+    const timerId = setTimeout(() => {
+      setMessages(messagesProp || []);
+    }, 0);
+
+    return () => clearTimeout(timerId);
   }, [messagesProp]);
 
   const updateMessages = useCallback((nextMessages) => {

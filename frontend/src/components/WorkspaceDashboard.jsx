@@ -10,33 +10,21 @@ import DirectMessageScreen from "./DirectMessageScreen";
 import NotificationList from "./NotificationList";
 import ReminderList from "./ReminderList";
 import ActivityFeed from "./ActivityFeed";
-import { Users, Hash, MessageSquare, Plus, BellRing } from "lucide-react";
+import { Users, Hash, Plus, BellRing } from "lucide-react";
 import {
   card,
   contentArea,
   dashboard,
   dashboardChat,
-  dashboardGrid,
-  emptyState,
   errorText,
   form,
   formGroup,
-  getPriorityStyle,
   input,
   label,
-  list,
-  listItem,
-  listItemMain,
-  listItemMeta,
-  listItemTitle,
   loading as loadingStyle,
-  mutedText,
   primaryBtn,
-  reminderItem,
-  reminderTime,
   sectionSubtitle,
   sectionTitle,
-  select,
   successText,
   textarea,
   workspaceShell,
@@ -135,7 +123,7 @@ const readSettledPayloads = (results) =>
     result.status === "fulfilled" ? result.value.data?.payload || [] : []
   );
 
-const fetchRelevantReminders = async (workspaceId, channelList = [], userList = [], currentUserId = "") => {
+const fetchRelevantReminders = async (workspaceId, currentUserId = "") => {
   if (!workspaceId) {
     return [];
   }
@@ -170,6 +158,7 @@ function WorkspaceDashboard() {
   const [workspaces, setWorkspaces] = useState([]);
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState("");
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [channels, setChannels] = useState([]);
   const [directUsers, setDirectUsers] = useState([]);
   const [reminders, setReminders] = useState([]);
@@ -262,7 +251,7 @@ function WorkspaceDashboard() {
   }, []);
 
   const loadWorkspaceReminders = useCallback(
-    async (workspaceId, channelList = [], userList = []) => {
+    async (workspaceId) => {
       if (!workspaceId) {
         setReminders([]);
         return [];
@@ -270,8 +259,6 @@ function WorkspaceDashboard() {
 
       const listData = await fetchRelevantReminders(
         workspaceId,
-        channelList,
-        userList,
         currentUserId
       );
 
@@ -279,7 +266,7 @@ function WorkspaceDashboard() {
 
       return listData;
     },
-    []
+    [currentUserId]
   );
 
   const loadWorkspaceDetails = useCallback(async (workspaceId) => {
@@ -305,7 +292,7 @@ function WorkspaceDashboard() {
     setDirectUsers(usersData);
 
     await Promise.all([
-      loadWorkspaceReminders(workspaceId, channelsData, usersData),
+      loadWorkspaceReminders(workspaceId),
       loadNotifications(),
     ]);
   }, [loadNotifications, loadWorkspaceReminders]);
@@ -344,24 +331,6 @@ function WorkspaceDashboard() {
     [loadNotifications, notifications]
   );
 
-  const markWorkspaceNotificationsRead = useCallback(
-    () =>
-      markNotificationsRead(
-        (notification) => getId(notification.workspace) === getId(selectedWorkspace)
-      ),
-    [markNotificationsRead, selectedWorkspace]
-  );
-
-  const markWorkspaceReminderNotificationsRead = useCallback(
-    () =>
-      markNotificationsRead(
-        (notification) =>
-          notification.notificationType === "REMINDER" &&
-          getId(notification.workspace) === getId(selectedWorkspace)
-      ),
-    [markNotificationsRead, selectedWorkspace]
-  );
-
   const loadAllData = useCallback(async () => {
     try {
       setLoading(true);
@@ -391,6 +360,19 @@ function WorkspaceDashboard() {
 
     return () => clearTimeout(timerId);
   }, [loadAllData]);
+
+  useEffect(() => {
+    if (!isSidebarOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSidebarOpen]);
 
   useEffect(() => {
     if (!currentUser) {
@@ -436,13 +418,11 @@ function WorkspaceDashboard() {
 
     const intervalId = setInterval(() => {
       loadNotifications().catch(() => { });
-      loadWorkspaceReminders(selectedWorkspaceId, channels, directUsers).catch(() => { });
+      loadWorkspaceReminders(selectedWorkspaceId).catch(() => { });
     }, 15000);
 
     return () => clearInterval(intervalId);
   }, [
-    channels,
-    directUsers,
     loadNotifications,
     loadWorkspaceReminders,
     selectedWorkspaceId,
@@ -682,37 +662,27 @@ function WorkspaceDashboard() {
   };
 
   const renderOverview = () => {
-    // Generate some mock activities based on real data
-    const activities = [];
-    
-    // Add members as activity
-    selectedWorkspace.members?.forEach((member, i) => {
-      activities.push({
-        id: `member-${i}`,
-        actor: member.firstName ? `${member.firstName} ${member.lastName}` : member.email,
-        action: "joined the workspace",
-        timestamp: new Date(Date.now() - Math.random() * 86400000 * 3).toISOString(), // random time within 3 days
-        icon: <Users size={16} />,
-        iconBg: "#EFF6FF",
-        iconColor: "#3B82F6",
-      });
-    });
-    
-    // Add channels as activity
-    channels.forEach((channel, i) => {
-      activities.push({
-        id: `channel-${i}`,
-        actor: channel.createdBy?.firstName || "Someone",
+    const activities = channels.flatMap((channel) => {
+      const creator = channel.createdBy;
+      const actor =
+        `${creator?.firstName || ""} ${creator?.lastName || ""}`.trim() ||
+        creator?.email;
+
+      if (!channel.createdAt || !actor) {
+        return [];
+      }
+
+      return [{
+        id: getId(channel),
+        actor,
         action: "created channel",
         target: `#${channel.channelName}`,
-        timestamp: channel.createdAt || new Date().toISOString(),
+        timestamp: channel.createdAt,
         icon: <Hash size={16} />,
-        iconBg: "#F0FDFA",
-        iconColor: "#14B8A6",
-      });
-    });
-    
-    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        iconBg: "#EFEEFC",
+        iconColor: "#6258D8",
+      }];
+    }).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
     return (
       <div style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "32px", flex: 1, overflowY: "auto" }}>
@@ -835,7 +805,10 @@ function WorkspaceDashboard() {
     const isChatView = activeView === "channel" || activeView === "direct";
 
     return (
-      <div style={isChatView ? dashboardChat : dashboard}>
+      <div
+        className="workspace-dashboard"
+        style={isChatView ? dashboardChat : dashboard}
+      >
         {error && <p style={errorText}>{error}</p>}
         {success && <p style={successText}>{success}</p>}
 
@@ -885,7 +858,7 @@ function WorkspaceDashboard() {
                 setActiveView("reminders");
               }}
               onRefresh={() =>
-                loadWorkspaceReminders(getId(selectedWorkspace), channels, directUsers)
+                loadWorkspaceReminders(getId(selectedWorkspace))
               }
             />
           </section>
@@ -906,7 +879,14 @@ function WorkspaceDashboard() {
   };
 
   return (
-    <div style={workspaceShell}>
+    <div className="workspace-shell" style={workspaceShell}>
+      <button
+        type="button"
+        aria-label="Close workspace navigation"
+        className={`workspace-sidebar-backdrop${isSidebarOpen ? " is-visible" : ""}`}
+        onClick={() => setIsSidebarOpen(false)}
+        tabIndex={isSidebarOpen ? 0 : -1}
+      />
       <WorkspaceSidebar
         workspaces={workspaces}
         currentWorkspace={selectedWorkspace}
@@ -976,9 +956,11 @@ function WorkspaceDashboard() {
           });
         }}
         onLogout={handleLogout}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
-      <main style={contentArea}>
+      <main className="workspace-content" style={contentArea}>
         <WorkspaceHeader
           workspace={selectedWorkspace}
           activeView={activeView}
@@ -988,6 +970,7 @@ function WorkspaceDashboard() {
           onOpenMembers={() => setActiveView("members")}
           onOpenCreateWorkspace={() => setActiveView("create-workspace")}
           onOpenCreateChannel={() => setActiveView("create-channel")}
+          onOpenNavigation={() => setIsSidebarOpen(true)}
         />
 
         {renderContent()}

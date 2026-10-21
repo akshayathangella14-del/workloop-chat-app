@@ -5,6 +5,7 @@ import { useAuth } from "../store/authStore";
 import { useChat } from "../store/chatStore";
 
 import ProfileMenu from "./ProfileMenu";
+import { Menu } from "lucide-react";
 
 import {
   adminGrid,
@@ -70,6 +71,7 @@ function AdminDashboard() {
   } = useChat();
 
   const [activeView, setActiveView] = useState("overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dashboard, setDashboard] = useState(null);
 
@@ -102,8 +104,25 @@ function AdminDashboard() {
 
   // Load dashboard on mount
   useEffect(() => {
-    loadDashboard();
+    const timerId = setTimeout(() => {
+      loadDashboard();
+    }, 0);
+
+    return () => clearTimeout(timerId);
   }, [loadDashboard]);
+
+  useEffect(() => {
+    if (!isSidebarOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSidebarOpen]);
 
   // Connect admin socket
   useEffect(() => {
@@ -310,7 +329,7 @@ function AdminDashboard() {
         ))}
       </section>
 
-      <div style={adminGrid}>
+      <div className="admin-grid" style={adminGrid}>
         {renderWorkspaceOverview()}
         {renderMemberOverview()}
       </div>
@@ -345,9 +364,16 @@ function AdminDashboard() {
   ];
 
   return (
-    <div style={adminShell}>
+    <div className="admin-shell" style={adminShell}>
+      <button
+        type="button"
+        aria-label="Close admin navigation"
+        className={`admin-sidebar-backdrop${isSidebarOpen ? " is-visible" : ""}`}
+        onClick={() => setIsSidebarOpen(false)}
+        tabIndex={isSidebarOpen ? 0 : -1}
+      />
       {/* SIDEBAR */}
-      <aside style={adminSidebar}>
+      <aside id="admin-navigation" aria-label="Admin navigation" className={`admin-sidebar${isSidebarOpen ? " is-open" : ""}`} style={adminSidebar}>
         <div style={sidebarHeader}>
           <h2 style={workspaceName}>
             Admin Console
@@ -374,7 +400,10 @@ function AdminDashboard() {
                     ? sidebarItemActive
                     : sidebarItem
                 }
-                onClick={() => setActiveView(view)}
+                onClick={() => {
+                  setActiveView(view);
+                  setIsSidebarOpen(false);
+                }}
               >
                 <span style={sidebarItemLabel}>
                   {label}
@@ -411,8 +440,17 @@ function AdminDashboard() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <main style={adminMain}>
-        <div style={adminTopbar}>
+      <main className="admin-main" style={adminMain}>
+        <div className="admin-topbar" style={adminTopbar}>
+          <button
+            type="button"
+            aria-label="Open admin navigation"
+            aria-controls="admin-navigation"
+            className="admin-nav-toggle"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <Menu size={19} aria-hidden="true" />
+          </button>
           <div>
             <h1 style={sectionTitle}>
               Platform administration

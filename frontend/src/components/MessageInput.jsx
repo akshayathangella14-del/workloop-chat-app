@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useChat } from "../store/chatStore";
 import {
   composerInput,
   composerToolbar,
@@ -187,7 +186,7 @@ function MessageInput({
           </div>
         )}
 
-        <div style={composerToolbar}>
+        <div className="composer-toolbar" style={composerToolbar}>
           <div style={composerTools}>
             <input
               ref={fileRef}

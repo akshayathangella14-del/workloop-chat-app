@@ -107,7 +107,10 @@ function ChannelScreen({
   }
 
   return (
-    <section style={threadMessage ? chatLayoutWithThread : chatLayout}>
+    <section
+      className="workspace-chat-layout"
+      style={threadMessage ? chatLayoutWithThread : chatLayout}
+    >
       <div style={chatPanel}>
         <ChatHeader
           channel={activeChannel || channel}

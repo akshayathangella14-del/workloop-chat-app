@@ -4,7 +4,6 @@ import ProfileMenu from "./ProfileMenu";
 import Logo from "./Logo";
 import {
   brand,
-  brandMark,
   headerBar,
   linkText,
   navActions,
@@ -21,14 +20,14 @@ function Header() {
   };
 
   return (
-    <header style={headerBar}>
-      <NavLink to="/" style={brand}>
+    <header className="site-header" style={headerBar}>
+      <NavLink className="site-brand" to="/" style={brand}>
         <Logo width={32} height={32} />
         WorkLoop
       </NavLink>
 
-      <nav style={navActions}>
-        <NavLink to="/" style={linkText}>
+      <nav className="site-navigation" style={navActions}>
+        <NavLink className="site-home-link" to="/" style={linkText}>
           Home
         </NavLink>
         {isAuthenticated && currentUser ? (

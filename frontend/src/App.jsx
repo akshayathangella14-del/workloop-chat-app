@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider, useParams } from "react-router-dom";
+import { MotionConfig } from "framer-motion";
 import { Toaster } from "react-hot-toast";
 import RootLayout from "./components/RootLayout";
 import Home from "./components/Home";
@@ -91,7 +92,7 @@ function App() {
         },
         {
           path: "notifications",
-          element: protectedPage(<NotificationList />, userRoles),
+          element: protectedPage(<NotificationList isOpen />, userRoles),
         },
         {
           path: "reminders",
@@ -112,7 +113,9 @@ function App() {
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
-      <RouterProvider router={routerObj} />
+      <MotionConfig reducedMotion="user">
+        <RouterProvider router={routerObj} />
+      </MotionConfig>
     </div>
   );
 }

@@ -1,24 +1,23 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../store/authStore";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   MessageSquare, Hash, Users, BellRing, Clock, File, 
-  Zap, Shield, ArrowRight, CheckCircle2, Cpu,
-  Inbox, Workflow, ZapIcon, Globe, Lock, PlayCircle, Layout
+  Zap, Shield, ArrowRight, CheckCircle2,
+  Inbox, ZapIcon, Globe, PlayCircle, Layout
 } from "lucide-react";
 import Logo from "./Logo";
-import { useRef } from "react";
 
 // Brand Tokens for Landing Page
 const theme = {
-  bg: "#020617",
-  surface: "#07111F",
-  surfaceElevated: "#0E1A2F",
-  accent: "#22D3EE",
-  accentHover: "#06B6D4",
+  bg: "#171624",
+  surface: "#1E1D2D",
+  surfaceElevated: "#28263B",
+  accent: "#8B80F6",
+  accentHover: "#7569E8",
   success: "#22C55E",
-  text: "#F8FAFC",
-  muted: "#94A3B8",
+  text: "#FAF9FF",
+  muted: "#B0AEC0",
   cardBg: "rgba(255,255,255,0.02)",
   cardBorder: "rgba(255,255,255,0.08)",
   glass: "rgba(2, 6, 23, 0.7)"
@@ -28,11 +27,8 @@ export default function Home() {
   const { currentUser, isAuthenticated } = useAuth();
   const workspacePath = currentUser?.role === "ADMIN" ? "/admin" : "/workspace";
 
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-
   return (
-    <div style={{ minHeight: "100vh", background: theme.bg, color: theme.text, fontFamily: '"Inter", sans-serif', overflowX: "hidden" }}>
+    <div className="marketing-page" style={{ minHeight: "100vh", background: theme.bg, color: theme.text, fontFamily: '"Inter", sans-serif', overflowX: "hidden" }}>
       
       {/* HEADER */}
       <header style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, background: theme.glass, backdropFilter: "blur(12px)", borderBottom: `1px solid ${theme.cardBorder}` }}>

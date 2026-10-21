@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { X, Bell, MessageSquare, AtSign, Clock, CheckCircle2 } from "lucide-react";
 import EmptyState from "./EmptyState";
-import { getPriorityStyle } from "../styles/common";
 import { api, getId } from "../services/api";
 
 const formatTime = (value) => {
@@ -35,6 +35,7 @@ function NotificationList({
   onNotificationsChange,
   onRefresh,
 }) {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState(notificationsProp || []);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("ALL"); // ALL, MESSAGES, MENTIONS, REMINDERS
@@ -71,8 +72,14 @@ function NotificationList({
 
   useEffect(() => {
     if (isOpen) {
-      loadNotifications();
+      const timerId = setTimeout(() => {
+        loadNotifications();
+      }, 0);
+
+      return () => clearTimeout(timerId);
     }
+
+    return undefined;
   }, [isOpen, loadNotifications]);
 
   const markAllAsRead = async () => {
@@ -110,24 +117,54 @@ function NotificationList({
   };
 
   const groups = groupNotifications();
+  const closeDrawer = useCallback(() => {
+    if (onClose) {
+      onClose();
+      return;
+    }
+
+    navigate("/workspace");
+  }, [navigate, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeDrawer();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [closeDrawer, isOpen]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div
+          <motion.button
+            type="button"
+            aria-label="Close notifications"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.4 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={closeDrawer}
             style={{
               position: "fixed",
               inset: 0,
               backgroundColor: "#000",
               zIndex: 40,
+              border: 0,
+              padding: 0,
+              cursor: "pointer",
             }}
           />
           <motion.div
+            className="notification-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Notifications"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -150,8 +187,13 @@ function NotificationList({
                 <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800, color: "#0F172A" }}>Notifications</h2>
                 <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#64748B" }}>Stay on top of your workspace.</p>
               </div>
-              <button onClick={onClose} style={{ border: "none", background: "transparent", cursor: "pointer", color: "#94A3B8" }}>
-                <X size={24} />
+              <button
+                type="button"
+                aria-label="Close notifications"
+                onClick={closeDrawer}
+                style={{ border: "none", background: "transparent", cursor: "pointer", color: "#94A3B8" }}
+              >
+                <X size={21} />
               </button>
             </div>
 

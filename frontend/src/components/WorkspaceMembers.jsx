@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, UserPlus, X, Filter, Users, Shield, User } from "lucide-react";
 import EmptyState from "./EmptyState";
-import { getPriorityStyle } from "../styles/common";
 import { api, getId } from "../services/api";
 
 const getFullName = (user) => {

@@ -25,7 +25,6 @@ const getPriorityColor = (priority) => {
 function ReminderList({
   reminders: remindersProp,
   workspaceId,
-  currentUser,
   onRemindersChange,
   onRefresh,
 }) {
@@ -68,9 +67,14 @@ function ReminderList({
 
   useEffect(() => {
     if (hasControlledReminders) return;
-    loadReminders();
+    const timerId = setTimeout(() => {
+      loadReminders();
+    }, 0);
     const intervalId = setInterval(loadReminders, 30000);
-    return () => clearInterval(intervalId);
+    return () => {
+      clearTimeout(timerId);
+      clearInterval(intervalId);
+    };
   }, [hasControlledReminders, loadReminders]);
 
   const groups = {
@@ -92,7 +96,7 @@ function ReminderList({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "24px 0" }}>
+    <div className="reminder-list" style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "24px 0" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 32px" }}>
         <div>
           <h2 style={{ margin: 0, fontSize: "24px", fontWeight: 800, color: "#0F172A", letterSpacing: "-0.02em" }}>Reminders</h2>

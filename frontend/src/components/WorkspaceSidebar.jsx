@@ -53,6 +53,8 @@ function WorkspaceSidebar({
   onSelectChannel,
   onSelectDirectUser,
   onLogout,
+  isOpen = false,
+  onClose,
 }) {
   const workspaceId = getId(currentWorkspace);
 
@@ -79,7 +81,12 @@ function WorkspaceSidebar({
       : sidebarItem;
 
   return (
-    <aside style={sidebar}>
+    <aside
+      aria-label="Workspace navigation"
+      id="workspace-navigation"
+      className={`workspace-sidebar${isOpen ? " is-open" : ""}`}
+      style={sidebar}
+    >
       <div style={sidebarHeader}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <Logo width={32} height={32} />
@@ -108,7 +115,10 @@ function WorkspaceSidebar({
               key={getId(workspace)}
               type="button"
               style={getWorkspaceStyle(workspace)}
-              onClick={() => onSelectWorkspace(workspace)}
+              onClick={() => {
+                onSelectWorkspace(workspace);
+                onClose?.();
+              }}
             >
               <span style={sidebarItemLabel}>{workspace.workspaceName}</span>
             </button>
@@ -121,7 +131,10 @@ function WorkspaceSidebar({
               <button
                 type="button"
                 style={activeView === "overview" ? sidebarItemActive : sidebarItem}
-                onClick={onOpenOverview}
+                onClick={() => {
+                  onOpenOverview();
+                  onClose?.();
+                }}
               >
                 <span style={sidebarItemLabel}>Home</span>
               </button>
@@ -129,7 +142,10 @@ function WorkspaceSidebar({
               <button
                 type="button"
                 style={activeView === "members" ? sidebarItemActive : sidebarItem}
-                onClick={onOpenMembers}
+                onClick={() => {
+                  onOpenMembers();
+                  onClose?.();
+                }}
               >
                 <span style={sidebarItemLabel}>Members</span>
               </button>
@@ -138,7 +154,10 @@ function WorkspaceSidebar({
             <section style={sidebarSection}>
               <div style={sidebarSectionHeader}>
                 <span>Channels</span>
-                <button type="button" style={ghostBtn} onClick={onOpenCreateChannel}>
+                <button type="button" style={ghostBtn} onClick={() => {
+                  onOpenCreateChannel();
+                  onClose?.();
+                }}>
                   Add
                 </button>
               </div>
@@ -148,7 +167,10 @@ function WorkspaceSidebar({
                   key={getId(channel)}
                   type="button"
                   style={getChannelStyle(channel)}
-                  onClick={() => onSelectChannel(channel)}
+                  onClick={() => {
+                    onSelectChannel(channel);
+                    onClose?.();
+                  }}
                 >
                   <span style={sidebarItemLabel}># {channel.channelName}</span>
                   {channel.channelType === "PRIVATE" && <span style={softBadge}>P</span>}
@@ -172,7 +194,10 @@ function WorkspaceSidebar({
                       key={userId}
                       type="button"
                       style={{ ...getUserStyle(user), minHeight: "48px" }}
-                      onClick={() => onSelectDirectUser(user)}
+                      onClick={() => {
+                        onSelectDirectUser(user);
+                        onClose?.();
+                      }}
                     >
                       <span
                         style={{
@@ -207,7 +232,10 @@ function WorkspaceSidebar({
               <button
                 type="button"
                 style={activeView === "reminders" ? sidebarItemActive : sidebarItem}
-                onClick={onOpenReminders}
+                onClick={() => {
+                  onOpenReminders();
+                  onClose?.();
+                }}
               >
                 <span style={sidebarItemLabel}>Reminders</span>
                 {reminderCount > 0 && <span style={badge}>{reminderCount}</span>}
@@ -216,7 +244,10 @@ function WorkspaceSidebar({
               <button
                 type="button"
                 style={activeView === "notifications" ? sidebarItemActive : sidebarItem}
-                onClick={onOpenNotifications}
+                onClick={() => {
+                  onOpenNotifications();
+                  onClose?.();
+                }}
               >
                 <span style={sidebarItemLabel}>Notifications</span>
                 {unreadCount > 0 && <span style={badge}>{unreadCount}</span>}

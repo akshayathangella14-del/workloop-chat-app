@@ -1,25 +1,25 @@
 export const colors = {
-  sidebar: "#0F172A",
-  sidebarSoft: "#1E293B",
-  sidebarActive: "#334155",
+  sidebar: "#211F35",
+  sidebarSoft: "#2C2943",
+  sidebarActive: "#393550",
   sidebarText: "#F8FAFC",
-  sidebarMuted: "#94A3B8",
+  sidebarMuted: "#AAA7BD",
 
-  primary: "#0F172A",
-  primaryDark: "#111827",
-  accent: "#14B8A6",
-  accentHover: "#0D9488",
-  highlight: "#22D3EE",
+  primary: "#6258D8",
+  primaryDark: "#4F46C8",
+  accent: "#6258D8",
+  accentHover: "#5147C6",
+  highlight: "#8A82F0",
 
-  bg: "#F8FAFC",
+  bg: "#F6F6FA",
   panel: "#FFFFFF",
-  panelSoft: "#F1F5F9",
-  border: "#E2E8F0",
-  borderDark: "#CBD5E1",
+  panelSoft: "#F4F3FB",
+  border: "#E8E7EF",
+  borderDark: "#D8D7E2",
 
-  text: "#0F172A",
-  muted: "#64748B",
-  lightText: "#94A3B8",
+  text: "#242334",
+  muted: "#696879",
+  lightText: "#858495",
 
   success: "#10B981",
   warning: "#F59E0B",
@@ -28,7 +28,7 @@ export const colors = {
   lowBg: "#F1F5F9",
   mediumBg: "#FEF3C7",
   highBg: "#FEE2E2",
-  infoBg: "#CCFBF1",
+  infoBg: "#EFEEFC",
 };
 
 export const appBase = {
@@ -58,7 +58,7 @@ export const pageCenter = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "32px 18px",
+  padding: "28px 20px",
   backgroundColor: colors.bg,
   boxSizing: "border-box",
 };
@@ -114,17 +114,17 @@ export const authCard = {
   maxWidth: "430px",
   backgroundColor: colors.panel,
   border: `1px solid ${colors.border}`,
-  borderRadius: "14px",
-  boxShadow: "0 14px 40px rgba(15, 23, 42, 0.08)",
-  padding: "34px",
+  borderRadius: "18px",
+  boxShadow: "0 18px 50px rgba(35, 31, 75, 0.08)",
+  padding: "36px",
   boxSizing: "border-box",
 };
 
 export const authTitle = {
   margin: "0 0 8px",
   color: colors.text,
-  fontSize: "28px",
-  fontWeight: 850,
+  fontSize: "26px",
+  fontWeight: 750,
 };
 
 export const authSubtitle = {
@@ -161,8 +161,8 @@ export const label = {
 export const input = {
   width: "100%",
   border: `1px solid ${colors.borderDark}`,
-  borderRadius: "8px",
-  padding: "11px 12px",
+  borderRadius: "10px",
+  padding: "12px 13px",
   backgroundColor: "#ffffff",
   color: colors.text,
   fontSize: "14px",
@@ -185,15 +185,15 @@ export const select = {
 
 export const primaryBtn = {
   border: "none",
-  borderRadius: "8px",
-  padding: "10px 16px",
+  borderRadius: "9px",
+  padding: "11px 16px",
   backgroundColor: colors.accent,
   color: "#ffffff",
   fontSize: "14px",
-  fontWeight: 600,
+  fontWeight: 650,
   cursor: "pointer",
   transition: "all 0.2s ease",
-  boxShadow: "0 2px 4px rgba(20, 184, 166, 0.2)",
+  boxShadow: "0 2px 5px rgba(98, 88, 216, 0.18)",
 };
 
 export const secondaryBtn = {
@@ -296,7 +296,7 @@ export const sectionSubtitle = {
 export const workspaceShell = {
   height: "100vh",
   display: "grid",
-  gridTemplateColumns: "290px minmax(0, 1fr)",
+  gridTemplateColumns: "264px minmax(0, 1fr)",
   backgroundColor: colors.bg,
   overflow: "hidden",
 };
@@ -311,7 +311,7 @@ export const sidebar = {
 };
 
 export const sidebarHeader = {
-  padding: "18px",
+  padding: "17px 16px",
   borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
 };
 
@@ -352,9 +352,9 @@ export const sidebarSectionHeader = {
 
 export const sidebarItem = {
   width: "100%",
-  minHeight: "34px",
+  minHeight: "38px",
   border: "none",
-  borderRadius: "7px",
+  borderRadius: "8px",
   padding: "8px 10px",
   backgroundColor: "transparent",
   color: colors.sidebarText,
@@ -416,8 +416,8 @@ export const contentArea = {
 };
 
 export const workspaceHeader = {
-  minHeight: "70px",
-  padding: "16px 24px",
+  minHeight: "68px",
+  padding: "14px 22px",
   borderBottom: `1px solid ${colors.border}`,
   backgroundColor: colors.panel,
   display: "flex",
@@ -448,7 +448,7 @@ export const workspaceHeaderMeta = {
 export const dashboard = {
   flex: 1,
   overflowY: "auto",
-  padding: "24px",
+  padding: "22px",
   backgroundColor: colors.bg,
 };
 
@@ -538,8 +538,8 @@ export const chatPanel = {
 };
 
 export const chatHeader = {
-  minHeight: "66px",
-  padding: "13px 22px",
+  minHeight: "64px",
+  padding: "12px 20px",
   borderBottom: `1px solid ${colors.border}`,
   backgroundColor: colors.panel,
   display: "flex",
@@ -565,17 +565,17 @@ export const chatMeta = {
 export const messageList = {
   flex: 1,
   overflowY: "auto",
-  padding: "18px 24px",
+  padding: "18px clamp(16px, 3vw, 34px)",
   backgroundColor: colors.panel,
   minHeight: 0,
 };
 
 export const messageItem = {
   display: "grid",
-  gridTemplateColumns: "44px minmax(0, 1fr)",
-  gap: "14px",
-  padding: "14px 16px",
-  borderRadius: "12px",
+  gridTemplateColumns: "40px minmax(0, 1fr)",
+  gap: "12px",
+  padding: "12px 10px",
+  borderRadius: "9px",
   transition: "background-color 0.2s ease",
 };
 
@@ -585,10 +585,10 @@ export const messageItemActive = {
 };
 
 export const avatar = {
-  width: "44px",
-  height: "44px",
-  borderRadius: "12px",
-  backgroundColor: colors.primaryDark,
+  width: "40px",
+  height: "40px",
+  borderRadius: "11px",
+  backgroundColor: colors.primary,
   color: "#ffffff",
   display: "flex",
   alignItems: "center",
@@ -619,7 +619,7 @@ export const messageTopline = {
 
 export const senderName = {
   color: colors.text,
-  fontSize: "15px",
+  fontSize: "14px",
   fontWeight: 700,
 };
 
@@ -631,7 +631,7 @@ export const messageTime = {
 export const messageText = {
   margin: "4px 0 0",
   color: colors.text,
-  fontSize: "15px",
+  fontSize: "14px",
   lineHeight: 1.6,
   whiteSpace: "pre-wrap",
   overflowWrap: "break-word",
@@ -672,7 +672,7 @@ export const messageActions = {
 
 export const messageInputWrap = {
   borderTop: `1px solid ${colors.border}`,
-  padding: "14px 18px 18px",
+  padding: "12px clamp(12px, 2vw, 24px) 14px",
   backgroundColor: colors.panel,
 
   position: "sticky",
@@ -682,7 +682,7 @@ export const messageInputWrap = {
 
 export const messageComposer = {
   border: `1px solid ${colors.border}`,
-  borderRadius: "16px",
+  borderRadius: "12px",
   backgroundColor: colors.panel,
   boxShadow: "0 4px 20px rgba(15, 23, 42, 0.03)",
   overflow: "hidden",
@@ -691,21 +691,21 @@ export const messageComposer = {
 
 export const composerInput = {
   width: "100%",
-  minHeight: "86px",
+  minHeight: "58px",
   border: "none",
   outline: "none",
-  padding: "16px",
+  padding: "13px 14px",
   resize: "vertical",
   color: colors.text,
-  fontSize: "15px",
+  fontSize: "14px",
   lineHeight: 1.6,
   fontFamily: "inherit",
   boxSizing: "border-box",
 };
 
 export const composerToolbar = {
-  minHeight: "52px",
-  padding: "8px 16px",
+  minHeight: "48px",
+  padding: "7px 12px",
   borderTop: `1px solid ${colors.border}`,
   backgroundColor: "#FAFAFA",
   display: "flex",
@@ -914,7 +914,7 @@ export const threadPanel = {
   flexDirection: "column",
   boxSizing: "border-box",
   overflow: "hidden",
-  animation: "slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+  animation: "slideInRight 0.2s ease-out forwards",
 };
 
 export const threadHeader = {
@@ -1668,7 +1668,7 @@ export const adminShell = {
 
 export const adminSidebar = {
   ...sidebar,
-  backgroundColor: "#121827",
+  backgroundColor: colors.sidebar,
 };
 
 export const adminMain = {

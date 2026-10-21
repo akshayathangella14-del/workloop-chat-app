@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import Logo from "./Logo";
 import {
   authCard,
@@ -42,6 +43,8 @@ function Register() {
   const [success, setSuccess] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -192,15 +195,15 @@ function Register() {
 
   if (loading) {
     return (
-      <div style={pageCenter}>
+      <div className="auth-page" style={pageCenter}>
         <div style={loadingStyle}>Creating your account...</div>
       </div>
     );
   }
 
   return (
-    <div style={pageCenter}>
-      <section style={authCard}>
+    <div className="auth-page" style={pageCenter}>
+      <section className="auth-card" style={authCard}>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
           <Logo width={48} height={48} />
         </div>
@@ -271,16 +274,27 @@ function Register() {
             <label style={label} htmlFor="password">
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Minimum 6 characters"
-              autoComplete="new-password"
-              style={input}
-            />
+            <div className="auth-password-wrap">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Minimum 6 characters"
+                autoComplete="new-password"
+                style={input}
+              />
+              <button
+                className="auth-password-toggle"
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
             {fieldErrors.password && (
               <span style={errorText}>{fieldErrors.password}</span>
             )}
@@ -290,16 +304,27 @@ function Register() {
             <label style={label} htmlFor="confirmPassword">
               Confirm password
             </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Re-enter your password"
-              autoComplete="new-password"
-              style={input}
-            />
+            <div className="auth-password-wrap">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Re-enter your password"
+                autoComplete="new-password"
+                style={input}
+              />
+              <button
+                className="auth-password-toggle"
+                type="button"
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                aria-pressed={showConfirmPassword}
+                onClick={() => setShowConfirmPassword((visible) => !visible)}
+              >
+                {showConfirmPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+              </button>
+            </div>
             {fieldErrors.confirmPassword && (
               <span style={errorText}>{fieldErrors.confirmPassword}</span>
             )}

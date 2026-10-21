@@ -93,7 +93,11 @@ function ThreadPanel({
   }, [messageId]);
 
   useEffect(() => {
-    loadReplies();
+    const timerId = setTimeout(() => {
+      loadReplies();
+    }, 0);
+
+    return () => clearTimeout(timerId);
   }, [loadReplies]);
 
 
@@ -222,7 +226,7 @@ function ThreadPanel({
   }
 
   return (
-    <aside style={threadPanel}>
+    <aside className="workspace-thread-panel" style={threadPanel}>
       <header style={threadHeader}>
         <div>
           <h2 style={threadTitle}>
@@ -319,7 +323,7 @@ function ThreadPanel({
             style={composerInput}
           />
 
-          <div style={composerToolbar}>
+          <div className="composer-toolbar" style={composerToolbar}>
             <button
               type="submit"
               style={primaryBtn}
@@ -341,4 +345,3 @@ function ThreadPanel({
 }
 
 export default ThreadPanel;
-
