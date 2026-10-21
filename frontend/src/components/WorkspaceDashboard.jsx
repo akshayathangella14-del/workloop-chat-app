@@ -41,7 +41,7 @@ import {
   textarea,
   workspaceShell,
 } from "../styles/common";
-import { getId } from "../services/api";
+import { api, getId } from "../services/api";
 
 const initialWorkspaceForm = {
   workspaceName: "",
@@ -142,10 +142,7 @@ const fetchRelevantReminders = async (workspaceId, channelList = [], userList = 
 
 
   const reminderRequests = [
-    axios.get(
-      `${BASE_URL}/message-api/reminders`,
-      requestConfig
-    ),
+    api.get("/message-api/reminders"),
   ];
 
 
@@ -216,7 +213,7 @@ function WorkspaceDashboard() {
   }, [currentUserId, onlineUsers]);
 
   const loadWorkspaces = useCallback(async () => {
-    const res = await axios.get(`${BASE_URL}/workspace-api/workspaces`, requestConfig);
+    const res = await api.get("/workspace-api/workspaces");
     const listData = res.data?.payload || [];
 
     setWorkspaces(listData);
@@ -234,10 +231,7 @@ function WorkspaceDashboard() {
   }, []);
 
   const loadNotifications = useCallback(async () => {
-    const res = await axios.get(
-      `${BASE_URL}/notification-api/notifications`,
-      requestConfig
-    );
+    const res = await api.get("/notification-api/notifications");
     const listData = res.data?.payload || [];
 
     setNotifications((prev) => {
@@ -298,9 +292,9 @@ function WorkspaceDashboard() {
     }
 
     const [workspaceRes, channelsRes, usersRes] = await Promise.all([
-      axios.get(`${BASE_URL}/workspace-api/workspace/${workspaceId}`, requestConfig),
-      axios.get(`${BASE_URL}/channel-api/channels/${workspaceId}`, requestConfig),
-      axios.get(`${BASE_URL}/dm-api/users/${workspaceId}`, requestConfig),
+      api.get(`/workspace-api/workspace/${workspaceId}`),
+      api.get(`/channel-api/channels/${workspaceId}`),
+      api.get(`/dm-api/users/${workspaceId}`),
     ]);
     const workspaceData = workspaceRes.data?.payload || null;
     const channelsData = channelsRes.data?.payload || [];
@@ -340,11 +334,7 @@ function WorkspaceDashboard() {
       try {
         await Promise.all(
           unreadIds.map((notificationId) =>
-            axios.patch(
-              `${BASE_URL}/notification-api/notification/read`,
-              { notificationId },
-              requestConfig
-            )
+            api.patch("/notification-api/notification/read", { notificationId })
           )
         );
       } catch {
@@ -377,7 +367,7 @@ function WorkspaceDashboard() {
       setLoading(true);
       setError("");
 
-      const authRes = await axios.get(`${BASE_URL}/auth/check-auth`, requestConfig);
+      const authRes = await api.get("/auth/check-auth");
       setCurrentUser(authRes.data?.payload || null);
 
       await loadWorkspaces();
@@ -498,14 +488,10 @@ function WorkspaceDashboard() {
       setError("");
       setSuccess("");
 
-      const res = await axios.post(
-        `${BASE_URL}/workspace-api/workspaces`,
-        {
-          workspaceName: workspaceForm.workspaceName.trim(),
-          description: workspaceForm.description.trim(),
-        },
-        requestConfig
-      );
+      const res = await api.post("/workspace-api/workspaces", {
+        workspaceName: workspaceForm.workspaceName.trim(),
+        description: workspaceForm.description.trim(),
+      });
 
       setWorkspaceForm(initialWorkspaceForm);
       setSuccess("Workspace created successfully");
@@ -536,16 +522,12 @@ function WorkspaceDashboard() {
       setError("");
       setSuccess("");
 
-      const res = await axios.post(
-        `${BASE_URL}/channel-api/channels`,
-        {
-          workspace: getId(selectedWorkspace),
-          channelName: channelForm.channelName.trim(),
-          description: channelForm.description.trim(),
-          channelType: channelForm.channelType,
-        },
-        requestConfig
-      );
+      const res = await api.post("/channel-api/channels", {
+        workspace: getId(selectedWorkspace),
+        channelName: channelForm.channelName.trim(),
+        description: channelForm.description.trim(),
+        channelType: channelForm.channelType,
+      });
 
       setChannelForm(initialChannelForm);
       setSuccess("Channel created successfully");

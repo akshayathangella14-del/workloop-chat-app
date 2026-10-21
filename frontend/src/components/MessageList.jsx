@@ -86,6 +86,9 @@ function MessageList({
     });
   }, [displayedMessages]);
 
+  useEffect(() => {
+    if (!socket) return;
+
     const isMessageRelevant = (msg) => {
       if (!msg) return false;
       if (messageType === "DIRECT") {

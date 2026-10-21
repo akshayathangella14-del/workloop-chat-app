@@ -49,7 +49,7 @@ import {
   workspaceMeta,
   workspaceName,
 } from "../styles/common";
-import { getId } from "../services/api";
+import { api, getId } from "../services/api";
 
 // Get user display name
 const getFullName = (user) => {
@@ -83,10 +83,7 @@ function AdminDashboard() {
       setLoading(true);
       setError("");
 
-      const res = await axios.get(
-        `${BASE_URL}/admin-api/dashboard`,
-        requestConfig
-      );
+      const res = await api.get("/admin-api/dashboard");
 
       setDashboard(res.data?.payload || null);
     } catch (err) {

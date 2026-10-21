@@ -456,8 +456,7 @@ export const useChat = create((set, get) => ({
     try {
       set({ saving: true, error: null });
 
-      const res = await axios.post(`${BASE_URL}/message-api/file-message`, buildFilePayload(messageObj), {
-        ...requestConfig,
+      const res = await api.post("/message-api/file-message", buildFilePayload(messageObj), {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const message = res.data?.payload;

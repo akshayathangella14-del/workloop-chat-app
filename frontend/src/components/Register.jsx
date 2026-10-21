@@ -24,6 +24,16 @@ import {
 
 import { api, getErrorMessage } from "../services/api";
 
+const initialForm = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  role: "USER",
+  profileImageUrl: null,
+};
+
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialForm);
